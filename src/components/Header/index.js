@@ -1,6 +1,7 @@
 import React from "react";
 import logo from "../../assets/movie-logo.jpg";
 import styles from "./style.scss"
+import {NavLink} from "react-router-dom";
 
 const Header = (props) => {
   return (
@@ -12,13 +13,17 @@ const Header = (props) => {
           </a>
             <ul className="navbar-nav">
               <li className="nav-item">
-                <a className="nav-link"
-                >Home</a>
+                <NavLink
+                    className="nav-link"
+                    to='/'
+                    exact
+                >Home</NavLink>
               </li>
               <li className="nav-item">
-                <a
+                <NavLink
                     className="nav-link"
-                >Info</a>
+                    to='/info'
+                >Info</NavLink>
               </li>
             </ul>
         </nav>
