@@ -1,19 +1,20 @@
 import React from 'react';
-import styles from './style.scss';
+import styles from './App.module.scss';
 import Header from "../Header";
-import Switch, {BrowserRouter} from "react-router-dom";
-import Route from "react-router-dom";
+import {BrowserRouter} from "react-router-dom";
+import Footer from "../Footer";
 
 function App() {
   return (
       <BrowserRouter>
         <div className={styles.App}>
-          <Header />
-          <div className="container">
-            {/*<Switch>
+            <Header />
+            <div className="container">
+              {/*<Switch>
               <Route path={'/'} exact component={}/>
             </Switch>*/}
-          </div>
+            </div>
+            <Footer />
         </div>
       </BrowserRouter>
   );
