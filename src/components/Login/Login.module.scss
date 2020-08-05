@@ -1,0 +1,12 @@
+@import '../../theme/variable';
+
+.logo {
+  width: 15rem;
+  border-radius: 30px;
+}
+
+.card_left {
+  border-radius: 5px;
+  width: 100%;
+  background-image: linear-gradient(to right, $color-app-white, $color-app-yellow);
+}
