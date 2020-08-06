@@ -15,9 +15,9 @@ const Header = (props) => {
               <li className="nav-item">
                 <NavLink
                     className="nav-link"
-                    to='/'
+                    to='/movies'
                     exact
-                >Home</NavLink>
+                >Movies</NavLink>
               </li>
               <li className="nav-item">
                 <NavLink
