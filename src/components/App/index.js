@@ -6,7 +6,7 @@ import Footer from "../Footer";
 import Login from "../Login";
 import Register from "../Register";
 
-function App() {
+export default function App() {
   return (
       <BrowserRouter>
         <div className={styles.App}>
@@ -23,4 +23,3 @@ function App() {
   );
 }
 
-export default App;
