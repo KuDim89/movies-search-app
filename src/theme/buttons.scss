@@ -1,4 +1,18 @@
-.btn-color {
+@import "./variable";
+
+.btn-secondary {
   border: 1px solid $color-app-yellow;
   border-radius: 30px;
+  outline: none;
+  transition: all .3s ease;
+  &:focus {
+    border: 1px solid $color-app-grey;
+    border-radius: 30px;
+    outline: none;
+    color: $color-app-yellow;
+  }
+  &:active {
+    border: 1px solid $color-app-grey;
+    border-radius: 30px;
+  }
 }

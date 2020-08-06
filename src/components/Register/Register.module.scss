@@ -1,0 +1,15 @@
+@import "../../theme/variable";
+@import "../../theme/buttons";
+
+.register {
+  background-color: $color-app-white;
+  width: 25rem;
+  margin: 0 auto;
+  padding: 50px;
+  border-radius: 10px;
+  background-image: linear-gradient(to top, $color-app-yellow, $color-app-white );
+  img {
+    border-radius: 5px;
+    width: 15rem;
+  }
+}
