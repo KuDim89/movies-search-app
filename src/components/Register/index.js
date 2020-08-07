@@ -1,8 +1,9 @@
-import React from "react";
+import React, {useState} from "react";
 import styles from "./Register.module.scss";
 import logo from "../../assets/movie-logo.jpg";
 
 const Register = () => {
+  const [name, setName] = useState('');
   return (
       <div className="container px-4 py-5 mx-auto">
         <div className="d-flex flex-lg-row">
@@ -18,28 +19,34 @@ const Register = () => {
                   <div className="row justify-content-center my-auto">
                     <div className="col-6">
                       <label className="form-control-label">Name</label>
-                      <input type="text" id="email" name="name" className="form-control" />
+                      <input
+                          type="text"
+                          name="name"
+                          className="form-control"
+                          value={name}
+                          onChange={e => setName(e.target.value)}
+                      />
                     </div>
                     <div className="col-6">
                       <label className="form-control-label">Username</label>
-                      <input type="text" id="email" name="name" className="form-control" />
+                      <input type="text" name="username" className="form-control" />
                     </div>
                   </div>
                 </div>
 
                 <div className="form-group">
                   <label className="form-control-label">Email</label>
-                  <input type="text" id="email" name="email" className="form-control" />
+                  <input type="email" name="email" className="form-control" />
                 </div>
 
                 <div className="form-group">
                   <label className="form-control-label">Password</label>
-                  <input type="password" id="psw" name="psw" placeholder="6+ characters" className="form-control" />
+                  <input type="password"  name="password" placeholder="6+ characters" className="form-control" />
                 </div>
 
                 <div className="form-check">
-                  <input type="checkbox" className="form-check-input" id="exampleCheck1" />
-                  <label className="form-check-label" htmlFor="exampleCheck1">
+                  <input type="checkbox" className="form-check-input" />
+                  <label className="form-check-label">
                     Creating an account means you’re okay with our
                     <a href="#" className="text-muted"><b> Terms of Service</b></a>,
                     <a href="#" className="text-muted"><b> Privacy Policy</b></a>, and our default
