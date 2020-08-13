@@ -3,6 +3,7 @@ import styles from "./Login.module.scss"
 import logo from "../../assets/movie-logo.jpg"
 
 const Login = () => {
+
   return (
       <div className="container px-4 py-5 mx-auto">
           <div className="d-flex flex-lg-row">
