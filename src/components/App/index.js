@@ -5,6 +5,7 @@ import Header from "../Header";
 import Footer from "../Footer";
 import Login from "../Login";
 import Register from "../Register";
+import Home from "../Home";
 
 export default function Index() {
   return (
@@ -15,6 +16,7 @@ export default function Index() {
                 <Switch>
                   <Route path={'/'} exact component={Login}/>
                   <Route path={'/register'} exact component={Register}/>
+                  <Route path={'/home'} exact component={Home}/>
                 </Switch>
               </div>
               <Footer />
