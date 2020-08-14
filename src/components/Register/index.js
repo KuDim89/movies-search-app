@@ -9,6 +9,7 @@ const Register = () => {
   const [name, setName] = useState('');
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
+  const [phone, setPhone] = useState('');
   const [password, setPassword] = useState('');
   const [policy, setPolicy] = useState(false);
   const [validate, setValidate] = useState(false);
@@ -19,12 +20,13 @@ const Register = () => {
     if (name.length > 0
         && username.length > 0
         && email.match(/.+@.+..+/i)
+        && phone.match(/^((8|\+{0,9})[\- ]?)?(\(?\d{3,4}\)?[\- ]?)?[\d\- ]{5,10}$/)
         && password.length > 6
         && policy === true)
     {
       setValidate(true)
     }
-  },[name, username, email, password, policy])
+  },[name, username, email, phone, password, policy])
 
   const handleSubmit = (event) => {
     event.preventDefault()
@@ -35,6 +37,7 @@ const Register = () => {
             name: name,
             username: username,
             email: email,
+            phone: phone,
             password: password,
             policy: policy,
           }
@@ -100,6 +103,22 @@ const Register = () => {
                     {email.match(/.+@.+..+/i)
                             ? <div className="valid-feedback">Looks good</div>
                             : <div className="invalid-feedback">Email invalid</div>
+                    }
+                  </div>
+
+                  <div className="form-group">
+                    <label className="form-control-label">Phone</label>
+                    <input
+                        type="text"
+                        name="phone"
+                        placeholder="For example +385619086171"
+                        className={`form-control ${phone.match(/^((8|\+{0,9})[\- ]?)?(\(?\d{3,4}\)?[\- ]?)?[\d\- ]{12,13}$/) ? "is-valid" : "is-invalid"}`}
+                        value={phone}
+                        onChange={e => setPhone(e.target.value)}
+                    />
+                    {phone.match(/^((8|\+{0,9})[\- ]?)?(\(?\d{3,4}\)?[\- ]?)?[\d\- ]{5,10}$/)
+                        ? <div className="valid-feedback">Looks good</div>
+                        : <div className="invalid-feedback">Phone invalid</div>
                     }
                   </div>
 

@@ -1,8 +1,31 @@
-import React from "react";
+import React, {useEffect, useState} from "react";
 import styles from "./Login.module.scss"
-import logo from "../../assets/movie-logo.jpg"
+import logo from "./../../assets/movie-logo.jpg"
+import {Redirect} from "react-router-dom";
+import {getData} from "../../utils/api";
 
 const Login = () => {
+  const [registerRedirect, setRegisterRedirect] = useState(false);
+  const [phone, setPhone] = useState('');
+  const [password, setPassword] = useState('');
+  const [siteData, setSiteData] = useState('');
+  const [homeRedirect, setHomeRedirect] = useState(false);
+
+  useEffect(() => {
+    getData("siteData").then(setSiteData)
+  },[])
+
+  const toRegister = () => {
+    setRegisterRedirect(true)
+  }
+
+  const checkUser = () => {
+    debugger
+   const siteArray = siteData.slice(0).find(user => user.phone === phone && user.password === password)
+   if (siteArray) {
+     setHomeRedirect(true)
+   }
+  }
 
   return (
       <div className="container px-4 py-5 mx-auto">
@@ -15,22 +38,54 @@ const Login = () => {
                   </div>
                   <h3 className="mb-5 text-center">We are JustWatch</h3>
                   <h6>Please login to your account</h6>
-                  <div className="form-group"><label className="form-control-label">Username</label> <input
-                      type="text" id="email" name="email" placeholder="Phone number or email id" className="form-control" />
+                  <form>
+                    <div className="form-group">
+                    <label className="form-control-label">Phone</label>
+                    <input
+                      type="text"
+                      name="phone"
+                      placeholder="+385619086171"
+                      className="form-control"
+                      onChange={e => setPhone(e.target.value)}
+                    />
                   </div>
-                  <div className="form-group"><label className="form-control-label text-muted">Password</label> <input
-                      type="password" id="psw" name="psw" placeholder="Password" className="form-control" /></div>
-                  <div className="row justify-content-center my-3 px-3">
-                    <button className="btn-secondary btn-block btn-color py-2">Login to JustWatch</button>
+
+                    <div className="form-group">
+                    <label className="form-control-label text-muted">Password</label>
+                    <input
+                      type="password"
+                      name="password"
+                      autoComplete="off"
+                      placeholder="Password"
+                      className="form-control"
+                      onChange={e => setPassword(e.target.value)}
+                    />
                   </div>
-                  <div className="row justify-content-center my-2"><a href="#"><small className="text-muted">Forgot
+
+                    <div className="row justify-content-center my-3 px-3">
+                      <button
+                        className="btn-secondary btn-block btn-color py-2"
+                        onClick={checkUser}
+                      >Login to JustWatch</button>
+                      {homeRedirect && (
+                          <Redirect to='/home'/>
+                      )}
+                    </div>
+                  </form>
+                  <div className="row justify-content-center my-2"><a href="#" onClick={ (event) => event.preventDefault() }><small className="text-muted">Forgot
                     Password?</small></a>
                   </div>
                 </div>
               </div>
               <div className="bottom text-center mb-5">
                 <p className="sm-text mx-auto mb-3">Don't have an account?
-                  <button className="btn-secondary btn-color ml-2 py-2 px-3">Create new</button>
+                  <button
+                      className="btn-secondary btn-color ml-2 py-2 px-3"
+                      onClick={toRegister}
+                  >Create new</button>
+                  {registerRedirect && (
+                      <Redirect to='/register'/>
+                  )}
                 </p>
               </div>
             </div>
