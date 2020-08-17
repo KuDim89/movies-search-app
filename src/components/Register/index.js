@@ -7,7 +7,7 @@ import {Redirect} from "react-router-dom";
 
 const Register = () => {
   const [name, setName] = useState('');
-  const [username, setUsername] = useState('');
+  const [surname, setSurname] = useState('');
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
   const [password, setPassword] = useState('');
@@ -18,7 +18,7 @@ const Register = () => {
 
   useEffect(() => {
     if (name.length > 0
-        && username.length > 0
+        && surname.length > 0
         && email.match(/.+@.+..+/i)
         && phone.match(/^((8|\+{0,9})[\- ]?)?(\(?\d{3,4}\)?[\- ]?)?[\d\- ]{5,10}$/)
         && password.length > 6
@@ -26,7 +26,7 @@ const Register = () => {
     {
       setValidate(true)
     }
-  },[name, username, email, phone, password, policy])
+  },[name, surname, email, phone, password, policy])
 
   const handleSubmit = (event) => {
     event.preventDefault()
@@ -35,7 +35,7 @@ const Register = () => {
       const newUser =
           {
             name: name,
-            username: username,
+            surname: surname,
             email: email,
             phone: phone,
             password: password,
@@ -61,7 +61,7 @@ const Register = () => {
                   <div className="form-group">
                     <div className="row justify-content-center my-auto">
                       <div className="col-6">
-                        <label className="form-control-label">Name</label>
+                        <label className="form-control-label text-muted">Name</label>
                         <input
                             type="text"
                             name="name"
@@ -75,24 +75,24 @@ const Register = () => {
                         }
                       </div>
                       <div className="col-6">
-                        <label className="form-control-label">Username</label>
+                        <label className="form-control-label text-muted">Surname</label>
                         <input
                             type="text"
-                            name="username"
-                            className={`form-control ${username ? "is-valid" : "is-invalid"}`}
-                            value={username}
-                            onChange={e => setUsername(e.target.value)}
+                            name="surname"
+                            className={`form-control ${surname ? "is-valid" : "is-invalid"}`}
+                            value={surname}
+                            onChange={e => setSurname(e.target.value)}
                         />
-                        {username
+                        {surname
                             ? <div className="valid-feedback">Looks good</div>
-                            : <div className="invalid-feedback">Username invalid</div>
+                            : <div className="invalid-feedback">Surname invalid</div>
                         }
                       </div>
                     </div>
                   </div>
 
                   <div className="form-group">
-                    <label className="form-control-label">Email</label>
+                    <label className="form-control-label text-muted">Email</label>
                     <input
                         type="email"
                         name="email"
@@ -107,7 +107,7 @@ const Register = () => {
                   </div>
 
                   <div className="form-group">
-                    <label className="form-control-label">Phone</label>
+                    <label className="form-control-label text-muted">Phone</label>
                     <input
                         type="text"
                         name="phone"
@@ -123,7 +123,7 @@ const Register = () => {
                   </div>
 
                   <div className="form-group">
-                    <label className="form-control-label">Password</label>
+                    <label className="form-control-label text-muted">Password</label>
                     <input
                         type="password"
                         name="password"

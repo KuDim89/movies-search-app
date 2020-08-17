@@ -50,7 +50,7 @@ const Login = () => {
                   }
                   <form>
                     <div className="form-group">
-                      <label className="form-control-label">Phone</label>
+                      <label className="form-control-label text-muted">Phone</label>
                       <input
                         type="text"
                         name="phone"
