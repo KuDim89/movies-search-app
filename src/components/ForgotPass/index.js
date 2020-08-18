@@ -15,7 +15,6 @@ const ForgotPass = () => {
   const [password, setPassword] = useState("");
   const [passwordExist, setPasswordExist] = useState(false);
 
-
   useEffect(() => {
     getData("siteData").then(setSiteData);
 
@@ -32,7 +31,6 @@ const ForgotPass = () => {
 
   const sendPassword = (event) => {
     event.preventDefault()
-    debugger
     const siteArray = siteData.slice(0).find(user => user.phone === phone && user.email === email)
     if (siteArray) {
       setName(siteArray.name);
@@ -42,7 +40,6 @@ const ForgotPass = () => {
     } else {
       setPassword('none')
     }
-
   }
 
   return (
