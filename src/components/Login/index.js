@@ -1,8 +1,9 @@
-import React, {useEffect, useState} from "react";
+import React, {useContext, useEffect, useState} from "react";
 import styles from "./Login.module.scss"
 import logo from "./../../assets/movie-logo.jpg"
 import {Redirect}  from "react-router-dom";
 import {getData} from "../../utils/api";
+import AppContext from "../../context";
 
 const Login = () => {
   const [registerRedirect, setRegisterRedirect] = useState(false);
@@ -11,6 +12,9 @@ const Login = () => {
   const [siteData, setSiteData] = useState('');
   const [homeRedirect, setHomeRedirect] = useState(false);
   const [validate, setValidate] = useState(false);
+
+  const {appActive, setAppActive} = useContext(AppContext);
+  const {loginPage, setLoginPage} = useContext(AppContext);
 
   useEffect(() => {
     getData("siteData").then(setSiteData);
@@ -29,7 +33,9 @@ const Login = () => {
   const checkUser = () => {
     const siteArray = siteData.slice(0).find(user => user.phone === phone && user.password === password)
     if (siteArray) {
-      setHomeRedirect(true)
+      setAppActive(true);
+      setHomeRedirect(true);
+      setLoginPage(false);
     }
   }
 
@@ -110,6 +116,7 @@ const Login = () => {
                 magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea
                 commodo consequat.</small>
               </div>
+
             </div>
           </div>
       </div>
