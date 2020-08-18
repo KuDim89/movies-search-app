@@ -15,7 +15,6 @@ const Register = () => {
   const [validate, setValidate] = useState(false);
   const [redirect, setRedirect] = useState(false);
 
-
   useEffect(() => {
     if (name.length > 0
         && surname.length > 0
@@ -46,13 +45,13 @@ const Register = () => {
     setRedirect(true);
   }
 
-
   return (
       <div className="container px-4 py-5 mx-auto">
         <div className="d-flex flex-lg-row">
           <div className={styles.register}>
             <div className="row justify-content-center my-auto">
               <div className="col-12">
+
                 <div className="row justify-content-center px-3 mb-3">
                   <img className={styles.logo} id="logo" src={logo} alt="logo" />
                 </div>

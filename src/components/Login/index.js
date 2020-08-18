@@ -34,8 +34,8 @@ const Login = () => {
     const siteArray = siteData.slice(0).find(user => user.phone === phone && user.password === password)
     if (siteArray) {
       setAppActive(true);
-      setLoginPage(true);
       setHomeRedirect(true);
+      setLoginPage(false);
     }
   }
 
