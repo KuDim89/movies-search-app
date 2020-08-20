@@ -1,11 +1,11 @@
 import React, {useState} from 'react';
-import {Switch, Route, BrowserRouter} from "react-router-dom";
+import {Switch, Route, BrowserRouter, Redirect} from "react-router-dom";
 import styles from './App.module.scss';
 import Header from "../Header";
 import Footer from "../Footer";
 import Login from "../Login";
 import Register from "../Register";
-import Home from "../Home";
+import Movies from "../Movies";
 import ForgotPass from "../ForgotPass";
 import {AppProvider} from "../../context";
 
@@ -26,8 +26,10 @@ export default function App() {
                   <Switch>
                     <Route path={'/'} exact component={Login}/>
                     <Route path={'/register'} exact component={Register}/>
-                    <Route path={'/home'} exact component={Home}/>
                     <Route path={'/forgotPass'} exact component={ForgotPass}/>
+                    <Route exact path="/movies">
+                      {!appActive ? <Redirect to="/" /> : <Movies />}
+                    </Route>
                   </Switch>
                 </div>
                 <Footer />
