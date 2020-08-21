@@ -12,9 +12,10 @@ import {AppProvider} from "../../context";
 
 export default function App() {
   const AppData = {
-    active: false,
-    login: true,
+    active: false, // false
+    login: true,  // true
   };
+
   const [appActive, setAppActive] = useState(AppData.active)
   const [loginPage, setLoginPage] = useState(AppData.login)
   return (
