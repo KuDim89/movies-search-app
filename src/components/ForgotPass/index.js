@@ -1,22 +1,28 @@
-import React, {useEffect, useState} from "react";
+import React, {useContext, useEffect, useState} from "react";
 import styles from "../Login/Login.module.scss";
 import logo from "../../assets/movie-logo.jpg";
 import {Redirect} from "react-router-dom";
 import {getData} from "../../utils/api";
+import AppContext from "../../context";
 
 const ForgotPass = () => {
   const [loginRedirect, setLoginRedirect] = useState(false);
   const [phone, setPhone] = useState('');
   const [email, setEmail] = useState('');
-  const [siteData, setSiteData] = useState('');
+  const [users, setUsers] = useState('');
   const [validate, setValidate] = useState(false);
   const [name, setName] = useState("");
   const [surname, setSurname] = useState("");
   const [password, setPassword] = useState("");
   const [passwordExist, setPasswordExist] = useState(false);
 
+  const {appActive, setAppActive} = useContext(AppContext);
+  const {loginPage, setLoginPage} = useContext(AppContext);
+
   useEffect(() => {
-    getData("siteData").then(setSiteData);
+    setLoginPage(false);
+    setAppActive(false);
+    getData("users").then(setUsers);
 
     if (phone.match(/^((8|\+{0,9})[\- ]?)?(\(?\d{3,4}\)?[\- ]?)?[\d\- ]{5,10}$/)
         && email.match(/.+@.+..+/i)) {
@@ -31,7 +37,7 @@ const ForgotPass = () => {
 
   const sendPassword = (event) => {
     event.preventDefault()
-    const siteArray = siteData.slice(0).find(user => user.phone === phone && user.email === email)
+    const siteArray = users.slice(0).find(user => user.phone === phone && user.email === email)
     if (siteArray) {
       setName(siteArray.name);
       setSurname(siteArray.surname);

@@ -18,23 +18,26 @@ const Header = (props) => {
 
   const handleLogin = () => {
     history.push("/")
-    setAppActive(true);
+    setLoginPage(true);
+    setAppActive(false);
   }
 
-  const handleHome = () => {
-    history.push("/home")
+  const handleMovies = () => {
+    history.push("/movies")
   }
 
   const handleRevert = () => {
     history.push("/")
+    setLoginPage(true);
   }
+
 
   return (
       <header>
         <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
               <a
                   className={`navbar-brand ${styles.link}`}
-                  onClick={appActive ? handleHome : handleRevert}
+                  onClick={appActive ? handleMovies: handleRevert}
               >
                 <img className={styles.header_logo} src={logo} alt="logo"/>
                 {props.text}

@@ -9,15 +9,15 @@ const Login = () => {
   const [registerRedirect, setRegisterRedirect] = useState(false);
   const [phone, setPhone] = useState('');
   const [password, setPassword] = useState('');
-  const [siteData, setSiteData] = useState('');
-  const [homeRedirect, setHomeRedirect] = useState(false);
+  const [users, setUsers] = useState('');
+  const [moviesRedirect, setMoviesRedirect] = useState(false);
   const [validate, setValidate] = useState(false);
 
   const {appActive, setAppActive} = useContext(AppContext);
   const {loginPage, setLoginPage} = useContext(AppContext);
 
   useEffect(() => {
-    getData("siteData").then(setSiteData);
+    getData("users").then(setUsers);
 
     if (phone.match(/^((8|\+{0,9})[\- ]?)?(\(?\d{3,4}\)?[\- ]?)?[\d\- ]{5,10}$/)
         && password.length > 6)
@@ -28,13 +28,14 @@ const Login = () => {
 
   const toRegister = () => {
     setRegisterRedirect(true)
+    setLoginPage(false);
   }
 
   const checkUser = () => {
-    const siteArray = siteData.slice(0).find(user => user.phone === phone && user.password === password)
+    const siteArray = users.slice(0).find(user => user.phone === phone && user.password === password)
     if (siteArray) {
       setAppActive(true);
-      setHomeRedirect(true);
+      setMoviesRedirect(true);
       setLoginPage(false);
     }
   }
@@ -85,8 +86,8 @@ const Login = () => {
                         onClick={checkUser}
                         disabled={!validate}
                       >Login to JustWatch</button>
-                      {homeRedirect && (
-                          <Redirect to='/home'/>
+                      {moviesRedirect && (
+                          <Redirect to='/movies'/>
                       )}
                     </div>
                   </form>

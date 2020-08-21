@@ -40,7 +40,7 @@ const Register = () => {
             password: password,
             policy: policy,
           }
-      setData('siteData', newUser)
+      setData('users', newUser)
     }
     setRedirect(true);
   }
