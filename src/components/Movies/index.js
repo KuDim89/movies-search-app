@@ -4,6 +4,7 @@ import Search from "../Search";
 import Card from "../Card";
 import {randomWord} from "../../utils/randomWord";
 import {getMoviesArr} from "../../utils/getMoviesArr";
+import Loader from "../Loader";
 
 // 4a3b711b
 // 7a651c56
@@ -84,11 +85,10 @@ const defaultMoviesArr = [
 const Movies = () => {
   const [loading, setLoading] = useState(true);
   const [movies, setMovies] = useState([]);
-  let count = 0;
+  let count = 0; //0
 
   function randomMovieArr()  {
     if(count < 10){
-      console.log(count)
       count = count + 1
       randomWord().then(word => getMoviesArr(word).then(data => {
         if (data.Response === "True" && loading) {
@@ -100,7 +100,7 @@ const Movies = () => {
       }))
     } else {
       getMoviesArr("man").then(data => {
-        if (data.Response === "True" && loading) {
+        if (data.Response === "True" && loading) { //True
           setMovies(data.Search)
           setLoading(false)
         } else {
@@ -118,11 +118,10 @@ const Movies = () => {
   return (
       <>
         <Search />
-        <div className={styles.cards_wrapper}>
+        <div className={`${styles.cards_wrapper} ${styles.relative}`}>
           <div className="row">
-
             { loading
-              ? (<div>loading...</div>)
+              ? (<Loader />)
               : (movies.map(item => (
                     <Card key={item.imdbID} cardData={item} />
                 )))
