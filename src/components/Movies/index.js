@@ -121,7 +121,7 @@ const Movies = () => {
         <div className={styles.cards_wrapper}>
           <div className="row">
 
-            { loading && !errorMessage
+            { loading
               ? (<div>loading...</div>)
               : (movies.map(item => (
                     <Card key={item.imdbID} cardData={item} />
