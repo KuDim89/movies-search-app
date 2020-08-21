@@ -28,6 +28,7 @@ const Login = () => {
 
   const toRegister = () => {
     setRegisterRedirect(true)
+    setLoginPage(false);
   }
 
   const checkUser = () => {

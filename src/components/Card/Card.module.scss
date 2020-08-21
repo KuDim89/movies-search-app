@@ -1,0 +1,24 @@
+.card_height_width {
+  height: 100%;
+  width: 255px;
+}
+
+.card_padding {
+  padding: 1rem;
+}
+
+.text_center {
+  text-align: center;
+}
+
+.img_container {
+  height: 100%;
+  overflow: hidden;
+  //min-height: 22rem;
+}
+
+.nowrap {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}

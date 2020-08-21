@@ -1,8 +1,9 @@
-import React, {useEffect, useState} from "react";
+import React, {useContext, useEffect, useState} from "react";
 import styles from "../Login/Login.module.scss";
 import logo from "../../assets/movie-logo.jpg";
 import {Redirect} from "react-router-dom";
 import {getData} from "../../utils/api";
+import AppContext from "../../context";
 
 const ForgotPass = () => {
   const [loginRedirect, setLoginRedirect] = useState(false);
@@ -15,7 +16,12 @@ const ForgotPass = () => {
   const [password, setPassword] = useState("");
   const [passwordExist, setPasswordExist] = useState(false);
 
+  const {appActive, setAppActive} = useContext(AppContext);
+  const {loginPage, setLoginPage} = useContext(AppContext);
+
   useEffect(() => {
+    setLoginPage(false);
+    setAppActive(false);
     getData("users").then(setUsers);
 
     if (phone.match(/^((8|\+{0,9})[\- ]?)?(\(?\d{3,4}\)?[\- ]?)?[\d\- ]{5,10}$/)

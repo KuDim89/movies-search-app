@@ -18,7 +18,8 @@ const Header = (props) => {
 
   const handleLogin = () => {
     history.push("/")
-    setAppActive(true);
+    setLoginPage(true);
+    setAppActive(false);
   }
 
   const handleMovies = () => {
@@ -27,7 +28,9 @@ const Header = (props) => {
 
   const handleRevert = () => {
     history.push("/")
+    setLoginPage(true);
   }
+
 
   return (
       <header>
