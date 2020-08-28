@@ -100,7 +100,7 @@ const Movies = () => {
       }))
     } else {
       getMoviesArr("man").then(data => {
-        if (data.Response === "True" && loading) { // True
+        if (data.Response === "True") { // True
           setMovies(data.Search)
           setLoading(false)
         } else {
@@ -112,12 +112,27 @@ const Movies = () => {
   }
 
   useEffect(() => {
-    randomMovieArr();
+    if (movies.length === 0) {
+      randomMovieArr();
+    }
   }, [])
+
+  const search = (string) => {
+    const searchValue = string.toString().trim()
+    setLoading(true)
+    getMoviesArr(searchValue).then(data => {
+      if (data.Response === "True") {
+        setMovies(data.Search)
+        setLoading(false)
+      } else {
+
+      }
+    })
+  }
 
   return (
       <>
-        <Search />
+        <Search search={search}/>
         <div className={`${styles.cards_wrapper} ${styles.relative}`}>
           <div className="row">
             { loading
