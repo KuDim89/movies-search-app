@@ -1,6 +1,12 @@
 .card_height_width {
   height: 100%;
-  width: 255px;
+  min-width: 255px;
+}
+
+@media screen and (max-width: 1200px) {
+  .card_height_width {
+    min-width: 100%;
+  }
 }
 
 .card_padding {
@@ -14,11 +20,16 @@
 .img_container {
   height: 100%;
   overflow: hidden;
-  //min-height: 22rem;
 }
 
 .nowrap {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+.card_hover:hover {
+  transition: all .6s ease;
+  transform: scale(1.1);
+  box-shadow: 11px 10px 16px 0 rgba(0,0,0,0.75);
 }

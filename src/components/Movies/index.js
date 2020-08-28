@@ -100,7 +100,7 @@ const Movies = () => {
       }))
     } else {
       getMoviesArr("man").then(data => {
-        if (data.Response === "True" && loading) { //True
+        if (data.Response === "True" && loading) { // True
           setMovies(data.Search)
           setLoading(false)
         } else {

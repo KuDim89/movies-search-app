@@ -4,8 +4,11 @@ import defaultPoster from "../../assets/poster.jpg"
 
 const Card = (props) => {
   return (
-      <div className="col-3 my-4">
-        <div className={`card ${styles.card_height_width} ${styles.card_padding}`}>
+      <div className="col-sm-12 col-md-6 col-lg-3 col-xl-3 my-4">
+        <div
+            className={`card ${styles.card_height_width} ${styles.card_padding} ${styles.card_hover}`}
+            title={props.cardData.Title}
+        >
           <div className="card-body">
             <h5 className={`card-title ${styles.text_center} ${styles.nowrap}`}>{props.cardData.Title}</h5>
           </div>

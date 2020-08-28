@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {Switch, Route, BrowserRouter, Redirect} from "react-router-dom";
 import styles from './App.module.scss';
 import Header from "../Header";
@@ -11,15 +11,20 @@ import {AppProvider} from "../../context";
 
 
 export default function App() {
-  const AppData = {
+  const appDataDefault = {
     active: false, // false
-    login: true,  // true
+    loginPage: true,  // true
   };
 
-  const [appActive, setAppActive] = useState(AppData.active)
-  const [loginPage, setLoginPage] = useState(AppData.login)
+  const initialAppData = JSON.parse(window.localStorage.getItem("appData")) || appDataDefault;
+  const [appData, setAppData] = useState(initialAppData);
+
+  useEffect(() => {
+    window.localStorage.setItem("appData", JSON.stringify(appData))
+  }, [appData])
+
   return (
-        <AppProvider value={{appActive, setAppActive, loginPage, setLoginPage}}>
+        <AppProvider value={{appData, setAppData}}>
           <BrowserRouter>
             <div className={styles.App}>
                 <Header />
@@ -29,7 +34,7 @@ export default function App() {
                     <Route path={'/register'} exact component={Register}/>
                     <Route path={'/forgotPass'} exact component={ForgotPass}/>
                     <Route exact path="/movies">
-                      {!appActive ? <Redirect to="/" /> : <Movies />}
+                      {appData.active ? <Movies /> : <Redirect to="/" />}
                     </Route>
                   </Switch>
                 </div>
