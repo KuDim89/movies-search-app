@@ -1,7 +1,7 @@
 import React, {useState} from "react";
 import styles from "./Search.module.scss"
 
-const Search = () => {
+const Search = (props) => {
   const [searchValue, setSearchValue] = useState('');
 
   const resetInput = () => {
@@ -10,7 +10,7 @@ const Search = () => {
 
   const callSearchFunction = (e) => {
     e.preventDefault();
-    //props.search(searchValue);
+    props.search(searchValue);
     resetInput();
   }
 
