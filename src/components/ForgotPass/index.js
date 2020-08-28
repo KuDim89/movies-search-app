@@ -1,28 +1,33 @@
 import React, {useContext, useEffect, useState} from "react";
 import styles from "../Login/Login.module.scss";
 import logo from "../../assets/movie-logo.jpg";
-import {Redirect} from "react-router-dom";
+import {useHistory} from "react-router-dom";
 import {getData} from "../../utils/api";
 import AppContext from "../../context";
 
 const ForgotPass = () => {
-  const [loginRedirect, setLoginRedirect] = useState(false);
+  const [name, setName] = useState("");
   const [phone, setPhone] = useState('');
   const [email, setEmail] = useState('');
   const [users, setUsers] = useState('');
   const [validate, setValidate] = useState(false);
-  const [name, setName] = useState("");
   const [surname, setSurname] = useState("");
   const [password, setPassword] = useState("");
-  const [passwordExist, setPasswordExist] = useState(false);
+  const [isAlertSuccess, setIsAlertSuccess] = useState(false);
+  const [isAlertDanger, setIsAlertDanger] = useState(false);
 
-  const {appActive, setAppActive} = useContext(AppContext);
-  const {loginPage, setLoginPage} = useContext(AppContext);
+  const {appData, setAppData} = useContext(AppContext)
+  const history = useHistory();
 
   useEffect(() => {
-    setLoginPage(false);
-    setAppActive(false);
     getData("users").then(setUsers);
+
+    const newAppData = {
+      ...appData,
+      active: false,
+      loginPage: false
+    }
+    setAppData(newAppData);
 
     if (phone.match(/^((8|\+{0,9})[\- ]?)?(\(?\d{3,4}\)?[\- ]?)?[\d\- ]{5,10}$/)
         && email.match(/.+@.+..+/i)) {
@@ -32,7 +37,11 @@ const ForgotPass = () => {
   }, [phone, email])
 
   const toLogin = () => {
-    setLoginRedirect(true);
+    history.push("/")
+  }
+
+  const toRegister = () => {
+    history.push("/register")
   }
 
   const sendPassword = (event) => {
@@ -42,9 +51,11 @@ const ForgotPass = () => {
       setName(siteArray.name);
       setSurname(siteArray.surname);
       setPassword(siteArray.password);
-      setPasswordExist(true);
+      setIsAlertSuccess(true);
+      setIsAlertDanger(false);
     } else {
-      setPassword('none')
+      setIsAlertDanger(true);
+      setIsAlertSuccess(false);
     }
   }
 
@@ -59,10 +70,7 @@ const ForgotPass = () => {
                 </div>
                 <h3 className="mb-5 text-center">We are JustWatch helpers</h3>
                 <h6>Please enter your phone and email</h6>
-                {!validate && phone && email
-                    ? <div className="invalid-feedback d-block text-center">Phone or email invalid</div>
-                    : null
-                }
+
                 <form>
                   <div className="form-group">
                     <label className="form-control-label text-muted">Phone</label>
@@ -74,7 +82,6 @@ const ForgotPass = () => {
                         onChange={e => setPhone(e.target.value)}
                     />
                   </div>
-
 
                   <div className="form-group">
                     <label className="form-control-label text-muted">Email</label>
@@ -95,6 +102,7 @@ const ForgotPass = () => {
                     </button>
                   </div>
                 </form>
+
               </div>
             </div>
           </div>
@@ -105,40 +113,33 @@ const ForgotPass = () => {
                 ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore
                 magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea
                 commodo consequat.</small>
-              <> {passwordExist &&
-              <div>
-                <div className="alert alert-success my-3">
-                  {name.charAt(0).toUpperCase() + name.slice(1)} {surname.charAt(0).toUpperCase() + surname.slice(1)} your
-                  password:&nbsp;
-                  <b>{password}</b>
-                </div>
-                <button
-                    className="btn-secondary btn-block btn-color py-2"
-                    onClick={toLogin}
-                >Go to Login page
-                </button>
-                {loginRedirect && (
-                    <Redirect to='/'/>
-                )}
-              </div>
-              }
-              </>
-              <> {!passwordExist && validate && password === "none"
-                  ? <div>
-                    <div className="alert alert-danger my-3">
-                      Your phone or email invalid.
+              <> {isAlertSuccess && validate && (
+                  <div>
+                    <div className="alert alert-success my-3">
+                      {name.charAt(0).toUpperCase() + name.slice(1)} {surname.charAt(0).toUpperCase() + surname.slice(1)} your
+                      password:&nbsp;
+                      <b>{password}</b>
                     </div>
                     <button
                         className="btn-secondary btn-block btn-color py-2"
                         onClick={toLogin}
+                    >Go to Login page
+                    </button>
+                  </div>
+                )}
+              </>
+              <> {isAlertDanger && validate && (
+                  <div>
+                    <div className="alert alert-danger my-3">
+                      We don't know your phone number or mail. Please fill form correct.
+                    </div>
+                    <button
+                        className="btn-secondary btn-block btn-color py-2"
+                        onClick={toRegister}
                     >Go to Register page
                     </button>
-                    {loginRedirect && (
-                        <Redirect to='/register'/>
-                    )}
                   </div>
-                  : null
-              }
+                )}
               </>
             </div>
           </div>

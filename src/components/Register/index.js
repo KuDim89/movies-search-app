@@ -2,7 +2,7 @@ import React, {useEffect, useState} from "react";
 import styles from "./Register.module.scss";
 import logo from "../../assets/movie-logo.jpg";
 import {setData} from "../../utils/set";
-import {Redirect} from "react-router-dom";
+import {useHistory} from "react-router-dom";
 
 
 const Register = () => {
@@ -13,7 +13,8 @@ const Register = () => {
   const [password, setPassword] = useState('');
   const [policy, setPolicy] = useState(false);
   const [validate, setValidate] = useState(false);
-  const [redirect, setRedirect] = useState(false);
+
+  const history = useHistory();
 
   useEffect(() => {
     if (name.length > 0
@@ -31,18 +32,17 @@ const Register = () => {
     event.preventDefault()
 
     if(validate){
-      const newUser =
-          {
+      const newUser = {
             name: name,
             surname: surname,
             email: email,
             phone: phone,
             password: password,
-            policy: policy,
-          }
+            policy: policy
+      }
       setData('users', newUser)
+      history.push("/")
     }
-    setRedirect(true);
   }
 
   return (
@@ -51,11 +51,11 @@ const Register = () => {
           <div className={styles.register}>
             <div className="row justify-content-center my-auto">
               <div className="col-12">
-
                 <div className="row justify-content-center px-3 mb-3">
                   <img className={styles.logo} id="logo" src={logo} alt="logo" />
                 </div>
                 <h3 className="mb-5 text-center">We are JustWatch</h3>
+
                 <form>
                   <div className="form-group">
                     <div className="row justify-content-center my-auto">
@@ -68,10 +68,7 @@ const Register = () => {
                             value={name}
                             onChange={e => setName(e.target.value)}
                         />
-                        {name
-                            ? <div className="valid-feedback">Looks good</div>
-                            : <div className="invalid-feedback">Name invalid</div>
-                        }
+
                       </div>
                       <div className="col-6">
                         <label className="form-control-label text-muted">Surname</label>
@@ -82,10 +79,7 @@ const Register = () => {
                             value={surname}
                             onChange={e => setSurname(e.target.value)}
                         />
-                        {surname
-                            ? <div className="valid-feedback">Looks good</div>
-                            : <div className="invalid-feedback">Surname invalid</div>
-                        }
+
                       </div>
                     </div>
                   </div>
@@ -99,10 +93,7 @@ const Register = () => {
                         value={email}
                         onChange={e => setEmail(e.target.value)}
                     />
-                    {email.match(/.+@.+..+/i)
-                            ? <div className="valid-feedback">Looks good</div>
-                            : <div className="invalid-feedback">Email invalid</div>
-                    }
+
                   </div>
 
                   <div className="form-group">
@@ -115,10 +106,6 @@ const Register = () => {
                         value={phone}
                         onChange={e => setPhone(e.target.value)}
                     />
-                    {phone.match(/^((8|\+{0,9})[\- ]?)?(\(?\d{3,4}\)?[\- ]?)?[\d\- ]{5,10}$/)
-                        ? <div className="valid-feedback">Looks good</div>
-                        : <div className="invalid-feedback">Phone invalid</div>
-                    }
                   </div>
 
                   <div className="form-group">
@@ -132,10 +119,6 @@ const Register = () => {
                         value={password}
                         onChange={e => setPassword(e.target.value)}
                     />
-                    {password > 6
-                          ? <div className="valid-feedback">Looks good</div>
-                          : <div className="invalid-feedback">Password invalid</div>
-                    }
                   </div>
 
                   <div className="form-check">
@@ -164,9 +147,7 @@ const Register = () => {
                     >Create Account</button>
                   </div>
                 </form>
-                {redirect && (
-                    <Redirect to='/'/>
-                )}
+
               </div>
             </div>
           </div>
