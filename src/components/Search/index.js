@@ -9,9 +9,11 @@ const Search = (props) => {
   }
 
   const callSearchFunction = (e) => {
-    e.preventDefault();
-    props.search(searchValue);
-    resetInput();
+    if(searchValue){
+      e.preventDefault();
+      props.search(searchValue);
+      resetInput();
+    }
   }
 
   return (
@@ -19,14 +21,22 @@ const Search = (props) => {
         <input
             className={`form-control mr-2 ${styles.formWidth}`}
             type="search"
+            autoComplete="off"
             placeholder="Enter movie name here..."
-            onChange={e => setSearchValue(e.target.value)}
+            value={searchValue}
+            onChange={e => {
+              let value = e.target.value;
+              value = value.replace(/[^A-Za-z0-9(),-_., ]+/, '')
+              setSearchValue(value)
+            }}
         />
         <button
             className="btn btn-outline-warning my-2 my-sm-0"
             type="submit"
             onClick={callSearchFunction}
-        >Search</button>
+            disabled={searchValue === null || searchValue.match(/^ *$/) !== null}
+        >Search
+        </button>
       </form>
   )
 }

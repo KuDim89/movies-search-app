@@ -1,7 +1,7 @@
 import React, {useContext, useEffect, useState} from "react";
 import styles from "./Login.module.scss"
 import logo from "./../../assets/movie-logo.jpg"
-import {useHistory} from "react-router-dom";
+import {Link, useHistory} from "react-router-dom";
 import {getData} from "../../utils/api";
 import AppContext from "../../context";
 
@@ -94,9 +94,9 @@ const Login = () => {
                 </form>
 
                 <div className="row justify-content-center my-2">
-                  <a href={"/forgotPass"}>
+                  <Link to='/forgotPass'>
                     <small className="text-muted">Forgot Password?</small>
-                  </a>
+                  </Link>
                 </div>
               </div>
             </div>

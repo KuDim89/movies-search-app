@@ -5,9 +5,14 @@ import Card from "../Card";
 import {randomWord} from "../../utils/randomWord";
 import {getMoviesArr} from "../../utils/getMoviesArr";
 import Loader from "../Loader";
+import Modal from "../Modal";
 
-// 4a3b711b
-// 7a651c56
+const objectErrorText = {
+  MOVIE_NOT_FOUND : "Movie not found!",
+  TOO_MANY_RESULTS : "Too many results.",
+  INCORRECT_IMDB_ID : "Incorrect IMDb ID.",
+  REQUEST_LIMIT_REACHED : "Request limit reached!"
+}
 
 const defaultMoviesArr = [
   {
@@ -83,9 +88,17 @@ const defaultMoviesArr = [
 ]
 
 const Movies = () => {
-  const [loading, setLoading] = useState(true);
-  const [movies, setMovies] = useState([]);
-  let count = 0; //0
+    const [loading, setLoading] = useState(true);
+    const [movies, setMovies] = useState([]);
+    const [error, setError] = useState('')
+    const [errorText, setErrorText] = useState('')
+    let count = 0; // 0
+
+  useEffect(() => {
+    if (movies.length === 0 && !error) {
+      randomMovieArr();
+    }
+  }, [])
 
   function randomMovieArr()  {
     if(count < 10){
@@ -99,11 +112,13 @@ const Movies = () => {
         }
       }))
     } else {
-      getMoviesArr("man").then(data => {
+      getMoviesArr("woman").then(data => {
         if (data.Response === "True") { // True
           setMovies(data.Search)
           setLoading(false)
         } else {
+          setError(data.Error);
+          defineErrorText(data.Error)
           setMovies(defaultMoviesArr)
           setLoading(false)
         }
@@ -111,36 +126,55 @@ const Movies = () => {
     }
   }
 
-  useEffect(() => {
-    if (movies.length === 0) {
-      randomMovieArr();
-    }
-  }, [])
-
   const search = (string) => {
     const searchValue = string.toString().trim()
-    setLoading(true)
     getMoviesArr(searchValue).then(data => {
       if (data.Response === "True") {
         setMovies(data.Search)
         setLoading(false)
       } else {
-
+        setError(data.Error)
+        defineErrorText(data.Error)
+        // setMovies([]);
       }
     })
   }
 
+  const defineErrorText = (error) => {
+    switch (error) {
+      case objectErrorText.MOVIE_NOT_FOUND :
+        setErrorText( "It looks like there aren't any great matches for your search. Change your keywords and try again.")
+        break;
+      case objectErrorText.TOO_MANY_RESULTS :
+        setErrorText("Your word very short or it's only symbols. We find too many coincidences. Please enter more longer word without symbols.")
+        break;
+      case objectErrorText.INCORRECT_IMDB_ID :
+        setErrorText("You are forgot enter a word in input. Try enter word again and feel happy.")
+        break;
+      case objectErrorText.REQUEST_LIMIT_REACHED :
+        setErrorText("Please accept our apologies and visit us tomorrow.")
+        break;
+      default:
+        setErrorText("We have problems. Please try again later.")
+    }
+  }
+
+  const closeModal = () => {
+    setError('')
+  }
+
   return (
       <>
-        <Search search={search}/>
+        <Search search={search} error={setError}/>
         <div className={`${styles.cards_wrapper} ${styles.relative}`}>
           <div className="row">
-            { loading
-              ? (<Loader />)
-              : (movies.map(item => (
+            { loading && !error
+              ? <Loader />
+              : movies.map(item => (
                     <Card key={item.imdbID} cardData={item} />
-                )))
+                ))
             }
+            {error && <Modal text={errorText} error={error} closeModal={closeModal} />}
           </div>
         </div>
       </>

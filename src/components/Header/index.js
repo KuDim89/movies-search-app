@@ -65,6 +65,7 @@ const Header = (props) => {
                 <NavLink
                     className={`nav-link ${appData.active ? "" : "disabled"}`}
                     to='/info'
+                    exact
                 >Info</NavLink>
               </li>
             </ul>
