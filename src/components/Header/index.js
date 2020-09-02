@@ -1,4 +1,4 @@
-import React, {useContext} from "react";
+import React, {useContext, useState} from "react";
 import logo from "../../assets/movie-logo.jpg";
 import styles from "./Header.module.scss"
 import {NavLink, useHistory} from "react-router-dom";
@@ -6,6 +6,7 @@ import AppContext from "../../context";
 
 const Header = (props) => {
   const {appData, setAppData} = useContext(AppContext)
+  const [show, setShow] = useState(false)
   const history = useHistory();
 
   const handleLogout = () => {
@@ -14,6 +15,8 @@ const Header = (props) => {
       active: false,
       loginPage: true
     }
+
+    window.localStorage.removeItem('Movies');
     history.push("/")
     setAppData(newAppData);
   }
@@ -42,6 +45,10 @@ const Header = (props) => {
     setAppData(newAppData);
   }
 
+  const isTrigger = () => {
+    setShow(!show)
+  }
+
   return (
       <header>
         <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
@@ -52,8 +59,11 @@ const Header = (props) => {
             <img className={styles.header_logo} src={logo} alt="logo"/>
             {props.text}
           </a>
-          <div className="collapse navbar-collapse" id="navbarSupportedContent">
-            <ul className="navbar-nav">
+          <div className={`collapse navbar-collapse ${show ? "show" : ""}`} id="navbarSupportedContent">
+            <ul
+                className="navbar-nav"
+                onClick={isTrigger}
+            >
               <li className="nav-item my-3">
                 <NavLink
                     className={`nav-link ${appData.active ? "" : "disabled"}`}
@@ -76,18 +86,20 @@ const Header = (props) => {
               : <div className="form-inline my-2 my-lg-0">
                 {appData.active
                     ? <button
-                        className="btn btn-outline-secondary my-2 my-sm-0"
+                        className={`btn btn-outline-secondary my-2 my-sm-0 ${styles.padding_right}`}
                         onClick={handleLogout}
                     >Logout</button>
                     : <button
-                        className="btn btn-outline-secondary my-2 my-sm-0"
+                        className={`btn btn-outline-secondary my-2 my-sm-0 ${styles.padding_right}`}
                         onClick={handleLogin}
                     >Login</button>
                 }
               </div>
           }
-
-          <button className="navbar-toggler">
+          <button
+              className={`navbar-toggler ${styles.absolute}`}
+              onClick={isTrigger}
+          >
             <span className="navbar-toggler-icon"></span>
           </button>
         </nav>

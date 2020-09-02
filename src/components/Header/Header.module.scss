@@ -11,8 +11,23 @@
   display: flex;
 }
 
-.header_wrapper {
-  display: flex;
-  justify-content: space-between;
+.absolute {
+  position: absolute;
+  right: 1rem;
+  top: 1.2rem;
+}
+
+.absolute:focus {
+  outline: none;
+}
+
+@media only screen and (max-width: 991px){
+  .padding_right {
+    margin-right: 5rem;
+  }
+}
+
+header {
   width: 100%;
 }
+

@@ -88,17 +88,21 @@ const defaultMoviesArr = [
 ]
 
 const Movies = () => {
+    const initialMoviesData = JSON.parse(window.localStorage.getItem("Movies")) || [];
     const [loading, setLoading] = useState(true);
-    const [movies, setMovies] = useState([]);
+    const [movies, setMovies] = useState(initialMoviesData);
     const [error, setError] = useState('')
     const [errorText, setErrorText] = useState('')
     let count = 0; // 0
 
   useEffect(() => {
+    window.localStorage.setItem("Movies", JSON.stringify(movies))
     if (movies.length === 0 && !error) {
-      randomMovieArr();
+      return randomMovieArr();
     }
-  }, [])
+    setMovies(movies);
+    setLoading(false);
+  }, [movies])
 
   function randomMovieArr()  {
     if(count < 10){
