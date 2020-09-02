@@ -2,7 +2,7 @@ import React, {useContext, useEffect, useState} from "react";
 import styles from "../Login/Login.module.scss";
 import logo from "../../assets/movie-logo.jpg";
 import {useHistory} from "react-router-dom";
-import {getData} from "../../utils/api";
+import {getDataCollection, getDataDocument} from "../../utils/api";
 import AppContext from "../../context";
 
 const ForgotPass = () => {
@@ -15,12 +15,14 @@ const ForgotPass = () => {
   const [password, setPassword] = useState("");
   const [isAlertSuccess, setIsAlertSuccess] = useState(false);
   const [isAlertDanger, setIsAlertDanger] = useState(false);
+  const [siteData, setSiteData] = useState("");
 
   const {appData, setAppData} = useContext(AppContext)
   const history = useHistory();
 
   useEffect(() => {
-    getData("users").then(setUsers);
+    getDataCollection("users").then(setUsers);
+    getDataDocument("siteData", "forgotPass").then(setSiteData);
 
     const newAppData = {
       ...appData,
@@ -68,7 +70,7 @@ const ForgotPass = () => {
                 <div className="row justify-content-center px-3 mb-3">
                   <img className={styles.logo} id="logo" src={logo} alt="logo"/>
                 </div>
-                <h3 className="mb-5 text-center">We are JustWatch helpers</h3>
+                <h3 className="mb-5 text-center">{siteData.name}</h3>
                 <h6>Please enter your phone and email</h6>
 
                 <form>
@@ -108,11 +110,8 @@ const ForgotPass = () => {
           </div>
           <div className="card py-5 px-5">
             <div className="my-auto mx-md-5 px-md-5">
-              <h3>If you forgot password</h3>
-              <small>Lorem
-                ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore
-                magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea
-                commodo consequat.</small>
+              <h3>{siteData.title}</h3>
+              <small>{siteData.text}</small>
               <> {isAlertSuccess && validate && (
                   <div>
                     <div className="alert alert-success my-3">

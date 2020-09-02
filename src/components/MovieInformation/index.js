@@ -12,7 +12,7 @@ const MovieInformation = () => {
   const [moviesInfo, setMoviesInfo] = useState({});
   const [error, setError] = useState("");
 
-  const errorText = "We have problems, try again later please!!!";
+  const errorText = "We have problems, try re-login please!!!";
   const history = useHistory();
 
   useEffect(() => {
