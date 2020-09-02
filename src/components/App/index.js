@@ -8,6 +8,7 @@ import Register from "../Register";
 import Movies from "../Movies";
 import ForgotPass from "../ForgotPass";
 import {AppProvider} from "../../context";
+import MovieInformation from "../MovieInformation";
 
 
 export default function App() {
@@ -30,11 +31,14 @@ export default function App() {
                 <Header />
                 <div className="container">
                   <Switch>
-                    <Route path={'/'} exact component={Login}/>
-                    <Route path={'/register'} exact component={Register}/>
-                    <Route path={'/forgotPass'} exact component={ForgotPass}/>
+                    <Route exact path={'/'} component={Login}/>
+                    <Route exact path={'/register'} component={Register}/>
+                    <Route exact path={'/forgotPass'} component={ForgotPass}/>
                     <Route exact path="/movies">
                       {appData.active ? <Movies /> : <Redirect to="/" />}
+                    </Route>
+                    <Route exact path="/movies:id">
+                      {appData.active ? <MovieInformation /> : <Redirect to="/" />}
                     </Route>
                   </Switch>
                 </div>

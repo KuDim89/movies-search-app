@@ -31,7 +31,7 @@ const Search = (props) => {
             }}
         />
         <button
-            className="btn btn-outline-warning my-2 my-sm-0"
+            className="btn btn-light my-2 my-sm-0"
             type="submit"
             onClick={callSearchFunction}
             disabled={searchValue === null || searchValue.match(/^ *$/) !== null}

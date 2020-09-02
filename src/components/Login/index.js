@@ -109,7 +109,7 @@ const Login = () => {
               </p>
             </div>
           </div>
-          <div className="card card2">
+          <div className={`card ${styles.card_right}`}>
             <div className="my-auto mx-md-5 px-md-5 right">
               <h3>We are more than just a search</h3> <small>Lorem
               ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore
