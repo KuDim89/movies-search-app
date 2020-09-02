@@ -61,7 +61,7 @@ const ForgotPass = () => {
 
   return (
       <div className="container px-4 py-5 mx-auto">
-        <div className="d-flex flex-lg-row">
+        <div className={`d-flex flex-lg-row ${styles.flex_direction_column}`}>
           <div className={styles.card_left}>
             <div className="row justify-content-center my-auto">
               <div className="col-md-8 col-10 my-5">
@@ -106,8 +106,8 @@ const ForgotPass = () => {
               </div>
             </div>
           </div>
-          <div className="card card2">
-            <div className="my-auto mx-md-5 px-md-5 right">
+          <div className="card py-5 px-5">
+            <div className="my-auto mx-md-5 px-md-5">
               <h3>If you forgot password</h3>
               <small>Lorem
                 ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore
