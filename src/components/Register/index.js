@@ -3,10 +3,8 @@ import styles from "./Register.module.scss";
 import logo from "../../assets/movie-logo.jpg";
 import {setData} from "../../utils/set";
 import {useHistory} from "react-router-dom";
-import {getDataDocument} from "../../utils/api";
 
-
-const Register = () => {
+const Register = (props) => {
   const [name, setName] = useState('');
   const [surname, setSurname] = useState('');
   const [email, setEmail] = useState('');
@@ -14,11 +12,9 @@ const Register = () => {
   const [password, setPassword] = useState('');
   const [policy, setPolicy] = useState(false);
   const [validate, setValidate] = useState(false);
-  const [siteData, setSiteData] = useState('');
   const history = useHistory();
 
   useEffect(() => {
-    getDataDocument("siteData", "login").then(setSiteData);
     if (name.length > 0
         && surname.length > 0
         && email.match(/.+@.+..+/i)
@@ -56,7 +52,7 @@ const Register = () => {
                 <div className="row justify-content-center px-3 mb-3">
                   <img className={styles.logo} id="logo" src={logo} alt="logo" />
                 </div>
-                <h3 className="mb-5 text-center">{siteData.name}</h3>
+                <h3 className="mb-5 text-center">{props.siteData.name}</h3>
 
                 <form>
                   <div className="form-group">
@@ -149,7 +145,6 @@ const Register = () => {
                     >Create Account</button>
                   </div>
                 </form>
-
               </div>
             </div>
           </div>
