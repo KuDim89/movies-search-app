@@ -171,7 +171,7 @@ const Movies = () => {
       <>
         <Search search={search} error={setError}/>
         <div className={`${styles.cards_wrapper} ${styles.relative}`}>
-          <div className="row">
+          <div className="row w-100">
             { loading && !error
               ? <Loader />
               : movies.map(item => (
