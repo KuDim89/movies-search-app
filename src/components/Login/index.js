@@ -2,23 +2,17 @@ import React, {useContext, useEffect, useState} from "react";
 import styles from "./Login.module.scss"
 import logo from "./../../assets/movie-logo.jpg"
 import {Link, useHistory} from "react-router-dom";
-import {getDataCollection, getDataDocument} from "../../utils/api";
 import AppContext from "../../context";
 
-const Login = () => {
+const Login = (props) => {
   const [phone, setPhone] = useState('');
   const [password, setPassword] = useState('');
-  const [users, setUsers] = useState('');
   const [validate, setValidate] = useState(false);
-  const [siteData, setSiteData] = useState('');
-
   const {appData, setAppData} = useContext(AppContext)
   const history = useHistory();
 
   useEffect(() => {
     appData.active && history.push("/movies")
-    getDataCollection("users").then(setUsers);
-    getDataDocument("siteData", "login").then(setSiteData);
 
     phone.match(/^((8|\+{0,9})[\- ]?)?(\(?\d{3,4}\)?[\- ]?)?[\d\- ]{5,10}$/)
     && password.length > 6
@@ -36,7 +30,7 @@ const Login = () => {
   }
 
   const checkUser = () => {
-    const siteArray = users.slice(0).find(user => user.phone === phone && user.password === password)
+    const siteArray = props.users.slice(0).find(user => user.phone === phone && user.password === password)
     if (siteArray) {
       const newAppData = {
         ...appData,
@@ -57,7 +51,7 @@ const Login = () => {
                 <div className="row justify-content-center px-3 mb-3">
                   <img className={styles.logo} id="logo" src={logo} alt="logo"/>
                 </div>
-                <h3 className="mb-5 text-center">{siteData.name}</h3>
+                <h3 className="mb-5 text-center">{props.siteData.name}</h3>
                 <h6>Please login to your account</h6>
 
                 <form>
@@ -113,7 +107,7 @@ const Login = () => {
           </div>
           <div className={`card ${styles.card_right}`}>
             <div className="my-auto mx-md-5 px-md-5 right">
-              <h3>{siteData.title}</h3> <small>{siteData.text}</small>
+              <h3>{props.siteData.title}</h3> <small>{props.siteData.text}</small>
             </div>
           </div>
         </div>
