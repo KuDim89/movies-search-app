@@ -169,7 +169,11 @@ const Movies = () => {
 
   return (
       <>
-        <Search search={search} error={setError}/>
+        <div className="row w-100">
+          <div className="col-12">
+            <Search search={search} error={setError}/>
+          </div>
+        </div>
         <div className={`${styles.cards_wrapper} ${styles.relative}`}>
           <div className="row w-100">
             { loading && !error
