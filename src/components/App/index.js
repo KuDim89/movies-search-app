@@ -12,9 +12,10 @@ import MovieInformation from "../MovieInformation";
 import {getDataCollection} from "../../utils/api";
 import {findId} from "../../utils/findId";
 import Loader from "../Loader";
+import NotFound from "../NotFound";
 
 
-export default function App() {
+export default function  App() {
   const appDataDefault = {
     active: false, // false
     loginPage: true,  // true
@@ -60,9 +61,10 @@ export default function App() {
                     <Route exact path="/movies">
                       {appData.active ? <Movies /> : <Redirect to="/" />}
                     </Route>
-                    <Route exact path="/movies:id">
+                    <Route exact path="/movies/:id">
                       {appData.active ? <MovieInformation /> : <Redirect to="/" />}
                     </Route>
+                    <Route component={NotFound}/>
                   </Switch>
                 </div>
                 <Footer siteData={otherInfoData}/>
