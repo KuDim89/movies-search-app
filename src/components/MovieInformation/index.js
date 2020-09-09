@@ -1,22 +1,21 @@
 import React, {useEffect, useState} from "react";
-import {useHistory} from "react-router-dom";
+import {Link, withRouter} from "react-router-dom";
 import styles from "./MovieInformation.module.scss"
 import {getMoviesInfo} from "../../utils/getMovieInfo";
 import defaultPoster from "../../assets/poster.jpg"
 import Modal from "../Modal";
 import Loader from "../Loader";
 
-const MovieInformation = () => {
-
+const MovieInformation = (props) => {
   const [loading, setLoading] = useState(true);
   const [moviesInfo, setMoviesInfo] = useState({});
   const [error, setError] = useState("");
 
   const errorText = "We have problems, try re-login please!!!";
-  const history = useHistory();
 
   useEffect(() => {
-    const id = history.location.pathname.split(":").pop()
+    const id = props.match.params.id
+
     getMoviesInfo(id).then(data => {
       if(data === undefined) {
         return setError("Responce undifined")
@@ -34,10 +33,6 @@ const MovieInformation = () => {
     setError("");
   }
 
-  const toMovie = () => {
-    history.push("/movies")
-  }
-
   return (
       <>
         {loading && !error
@@ -45,10 +40,11 @@ const MovieInformation = () => {
             : Object.keys(moviesInfo).length !== 0 && (<div className="bg-dark rounded my-4 pr-3 pl-3">
           <div className="row justify-content-end">
             <div className="col-3 col-sm-2 col-lg-1">
-              <button
-                  className="btn btn-outline-secondary rounded-circle align-content-end py-2 px-3 mt-4"
-                  onClick={toMovie}
-              >&#10005;</button>
+              <Link to='/movies'>
+                <button
+                    className="btn btn-outline-secondary rounded-circle align-content-end py-2 px-3 mt-4"
+                >&#10005;</button>
+              </Link>
             </div>
             <div className="col-12">
               <h1
@@ -181,4 +177,4 @@ const MovieInformation = () => {
   )
 }
 
-export default MovieInformation;
+export default withRouter(MovieInformation);

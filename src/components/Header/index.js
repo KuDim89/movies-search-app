@@ -1,8 +1,9 @@
 import React, {useContext, useState} from "react";
 import logo from "../../assets/movie-logo.jpg";
 import styles from "./Header.module.scss"
-import {NavLink, useHistory} from "react-router-dom";
+import {useHistory} from "react-router-dom";
 import AppContext from "../../context";
+import NavigationLinks from "./NavigationLinks";
 
 const Header = (props) => {
   const {appData, setAppData} = useContext(AppContext)
@@ -60,25 +61,7 @@ const Header = (props) => {
             {props.text}
           </a>
           <div className={`collapse navbar-collapse ${show ? "show" : ""}`} id="navbarSupportedContent">
-            <ul
-                className="navbar-nav"
-                onClick={isTrigger}
-            >
-              <li className="nav-item my-3">
-                <NavLink
-                    className={`nav-link ${appData.active ? "" : "disabled"}`}
-                    to='/movies'
-                    exact
-                >Movies</NavLink>
-              </li>
-              <li className="nav-item my-3">
-                <NavLink
-                    className={`nav-link ${appData.active ? "" : "disabled"}`}
-                    to='/info'
-                    exact
-                >Info</NavLink>
-              </li>
-            </ul>
+            <NavigationLinks isTrigger={isTrigger}/>
           </div>
 
           {appData.loginPage

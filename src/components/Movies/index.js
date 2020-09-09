@@ -139,7 +139,6 @@ const Movies = () => {
       } else {
         setError(data.Error)
         defineErrorText(data.Error)
-        // setMovies([]);
       }
     })
   }
