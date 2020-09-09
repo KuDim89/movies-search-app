@@ -61,7 +61,7 @@ export default function  App() {
                     <Route exact path="/movies">
                       {appData.active ? <Movies /> : <Redirect to="/" />}
                     </Route>
-                    <Route exact path="/movies/:id">
+                    <Route exact path="/movies:id">
                       {appData.active ? <MovieInformation /> : <Redirect to="/" />}
                     </Route>
                     <Route component={NotFound}/>
