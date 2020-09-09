@@ -1,15 +1,10 @@
 import React from "react";
 import styles from "./Card.module.scss"
 import defaultPoster from "../../assets/poster.jpg"
-import {useHistory} from "react-router-dom";
+import {withRouter, Link} from "react-router-dom";
+
 
 const Card = (props) => {
-  const history = useHistory();
-
-  const toMovieInformation = (id) => {
-    history.push(`/movies:${id}`)
-  }
-
   return (
       <div className="col-12 col-md-6 col-lg-3 col-xl-3 my-4">
         <div
@@ -29,14 +24,13 @@ const Card = (props) => {
             <li className={`list-group-item ${styles.text_center}`}>{props.cardData.Year}</li>
           </ul>
           <div className="card-body">
-            <button
-                className="btn-secondary btn-block btn-color py-2"
-                onClick={() => toMovieInformation(props.cardData.imdbID)}
-            >View more</button>
+            <Link to={"/movies/" + props.cardData.imdbID}>
+              <button className="btn-secondary btn-block btn-color py-2">View more</button>
+            </Link>
           </div>
         </div>
       </div>
   )
 }
 
-export default Card;
+export default withRouter(Card);
