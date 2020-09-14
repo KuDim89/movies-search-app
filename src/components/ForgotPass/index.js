@@ -49,9 +49,13 @@ const ForgotPass = (props) => {
       setPassword(siteArray.password);
       setIsAlertSuccess(true);
       setIsAlertDanger(false);
+      setEmail('')
+      setPhone('')
     } else {
       setIsAlertDanger(true);
       setIsAlertSuccess(false);
+      setEmail('')
+      setPhone('')
     }
   }
 
@@ -75,6 +79,7 @@ const ForgotPass = (props) => {
                         name="phone"
                         placeholder="+385619086171"
                         className={`form-control ${phone.match(/^((8|\+{0,9})[\- ]?)?(\(?\d{3,4}\)?[\- ]?)?[\d\- ]{12,13}$/) ? "is-valid" : "is-invalid"}`}
+                        value={phone}
                         onChange={e => {
                           setPhone(e.target.value)
                           setIsAlertDanger(false)
@@ -89,6 +94,7 @@ const ForgotPass = (props) => {
                         type="email"
                         name="email"
                         className={`form-control ${email.match(/.+@.+..+/i) ? "is-valid" : "is-invalid"}`}
+                        value={email}
                         onChange={e => {
                           setEmail(e.target.value)
                           setIsAlertDanger(false)

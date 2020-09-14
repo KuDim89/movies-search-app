@@ -1,4 +1,4 @@
-import {db} from "../firebase";
+import {db} from "../../firebase";
 
 export function setData(collection, data = {}){
   db.collection(collection).add(data)

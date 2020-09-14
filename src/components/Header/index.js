@@ -4,6 +4,7 @@ import styles from "./Header.module.scss"
 import {useHistory} from "react-router-dom";
 import AppContext from "../../context";
 import NavigationLinks from "./NavigationLinks";
+import Button from "../UI/Button";
 
 const Header = (props) => {
   const {appData, setAppData} = useContext(AppContext)
@@ -49,7 +50,6 @@ const Header = (props) => {
   const isTrigger = () => {
     setShow(!show)
   }
-
   return (
       <header>
         <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
@@ -68,14 +68,22 @@ const Header = (props) => {
               ? null
               : <div className="form-inline my-2 my-lg-0">
                 {appData.active
-                    ? <button
-                        className={`btn btn-outline-secondary my-2 my-sm-0 ${styles.padding_right}`}
-                        onClick={handleLogout}
-                    >Logout</button>
-                    : <button
-                        className={`btn btn-outline-secondary my-2 my-sm-0 ${styles.padding_right}`}
-                        onClick={handleLogin}
-                    >Login</button>
+                    ? <div className={styles.padding_right}>
+                        <Button
+                            type={'transparent'}
+                            onClick={handleLogout}
+                          >
+                          Logout
+                          </Button>
+                      </div>
+                    :<div className={styles.padding_right}>
+                      <Button
+                          type={'transparent'}
+                          onClick={handleLogin}
+                        >
+                        Login
+                        </Button>
+                      </div>
                 }
               </div>
           }

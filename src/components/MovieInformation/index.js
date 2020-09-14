@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from "react";
 import {Link, withRouter} from "react-router-dom";
 import styles from "./MovieInformation.module.scss"
-import {getMoviesInfo} from "../../utils/getMovieInfo";
+import {getMoviesInfo} from "../../utils/omdbFunctions/getMovieInfo";
 import defaultPoster from "../../assets/poster.jpg"
 import Modal from "../Modal";
 import Loader from "../Loader";
