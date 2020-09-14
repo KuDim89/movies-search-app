@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from "react";
 import styles from "./Register.module.scss";
 import logo from "../../assets/movie-logo.jpg";
-import {setData} from "../../utils/set";
+import {setData} from "../../utils/firebaseFunctions/setData";
 import {useHistory} from "react-router-dom";
 
 const Register = (props) => {
@@ -124,7 +124,6 @@ const Register = (props) => {
                         type="checkbox"
                         name="policy"
                         className={`form-check-input ${policy ? "is-valid" : "is-invalid"}`}
-
                         checked={policy}
                         onChange={e => setPolicy(e.target.checked)}
                     />

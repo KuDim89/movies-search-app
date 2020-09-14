@@ -3,7 +3,7 @@ import styles from './Movies.module.scss'
 import Search from "../Search";
 import Card from "../Card";
 import {randomWord} from "../../utils/randomWord";
-import {getMoviesArr} from "../../utils/getMoviesArr";
+import {getMoviesArr} from "../../utils/omdbFunctions/getMoviesArr";
 import Loader from "../Loader";
 import Modal from "../Modal";
 
@@ -42,48 +42,6 @@ const defaultMoviesArr = [
     imdbID: "tt1596365",
     Type: "movie",
     Poster: "https://m.media-amazon.com/images/M/MV5BMjEwMzIxOTg3N15BMl5BanBnXkFtZTcwMjI4ODUzNw@@._V1_SX300.jpg"
-  },
-  {
-    Title: "The Other Woman",
-    Year: "2014",
-    imdbID: "tt2203939",
-    Type: "movie",
-    Poster: "https://m.media-amazon.com/images/M/MV5BMTc0ODE4ODY1OF5BMl5BanBnXkFtZTgwMDA5NjkzMTE@._V1_SX300.jpg"
-  },
-  {
-    Title: "Woman in Gold",
-    Year: "2015",
-    imdbID: "tt2404425",
-    Type: "movie",
-    Poster: "https://m.media-amazon.com/images/M/MV5BMTExMTUxNDQ5MjdeQTJeQWpwZ15BbWU4MDk4NTgxMzQx._V1_SX300.jpg"
-  },
-  {
-    Title: "The Woman in Black 2: Angel of Death",
-    Year: "2014",
-    imdbID: "tt2339741",
-    Type: "movie",
-    Poster: "https://m.media-amazon.com/images/M/MV5BMTgxMjUyNTAxNF5BMl5BanBnXkFtZTgwNTk4MDUyMzE@._V1_SX300.jpg"
-  },
-  {
-    Title: "The Woman",
-    Year: "2011",
-    imdbID: "tt1714208",
-    Type: "movie",
-    Poster: "https://m.media-amazon.com/images/M/MV5BMmM3ZmFmNDctMDEwZS00ODhlLWE0OWQtZTljMGNiZjg2ZTFiXkEyXkFqcGdeQXVyMTQxNzMzNDI@._V1_SX300.jpg"
-  },
-  {
-    Title: "A Fantastic Woman",
-    Year: "2017",
-    imdbID: "tt5639354",
-    Type: "movie",
-    Poster: "https://m.media-amazon.com/images/M/MV5BNGJhNWM4ZjItYWRhYS00N2UzLTg3OWItOGEzOWFmMGQ1ZjlkXkEyXkFqcGdeQXVyMTMxODk2OTU@._V1_SX300.jpg"
-  },
-  {
-    Title: "A Woman Under the Influence",
-    Year: "1974",
-    imdbID: "tt0072417",
-    Type: "movie",
-    Poster: "https://m.media-amazon.com/images/M/MV5BZDQwZmIzZjAtMmI1YS00NzEwLWFmYmEtMGFkYTk5NTllNDA0XkEyXkFqcGdeQXVyMTA2ODMzMDU@._V1_SX300.jpg"
   }
 ]
 
