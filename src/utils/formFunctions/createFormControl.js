@@ -6,7 +6,6 @@ export function createControl ( config, validation) {
       required: true
     },
     touched: false,
-    valid: !validation,
-    value: ''
+    valid: !validation
   }
 }

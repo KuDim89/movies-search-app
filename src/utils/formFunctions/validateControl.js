@@ -5,6 +5,11 @@ export function validateControl(value, validation) {
   }
 
   let isValid = true;
+
+  if(validation.checked) {
+    return isValid = value
+  }
+
   if (validation.required) {
     isValid = value.trim() !== '' && isValid
   }
