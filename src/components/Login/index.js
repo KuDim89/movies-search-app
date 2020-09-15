@@ -24,7 +24,8 @@ const Login = (props) => {
           {
             type: 'text',
             label: 'phone',
-            placeholder: '+385619086171'
+            placeholder: '+385619086171',
+            value: ''
           },
           {
             phone: true,
@@ -33,7 +34,8 @@ const Login = (props) => {
           {
             type: 'password',
             label: 'password',
-            placeholder: 'password'
+            placeholder: 'password',
+            value: ''
           },
           {
             minLength: 6
@@ -46,32 +48,22 @@ const Login = (props) => {
   }, [])
 
   const onChangeHandler = (event, formControlName) => {
-
-    const LoginFormControls = {...loginFormState.formControls}
-    const loginControl = {...LoginFormControls[formControlName]}
+    const loginFormControls = {...loginFormState.formControls};
+    const loginControl = {...loginFormControls[formControlName]};
 
     loginControl.value = event.target.value
     loginControl.touched = true
 
-    if (loginControl.touched) {
-      loginControl.validation.class = "is-invalid";
-    }
-
     loginControl.valid = validateControl(loginControl.value, loginControl.validation)
 
-    if (loginControl.valid) {
-      loginControl.validation.class = "is-valid";
-    }
+    loginFormControls[formControlName] = loginControl
 
-    LoginFormControls[formControlName] = loginControl
-
-   let isFormValid = true;
-    Object.keys(LoginFormControls).map(name => {
-      isFormValid = LoginFormControls[name].valid && isFormValid
+    let isFormValid = true;
+    Object.keys(loginFormControls).map(name => {
+      isFormValid = loginFormControls[name].valid && isFormValid
     })
 
-
-    setLoginFormState({formControls: LoginFormControls, isFormValid})
+    setLoginFormState({formControls: loginFormControls, isFormValid})
   }
 
   const checkUser = (event) => {
@@ -81,7 +73,7 @@ const Login = (props) => {
     const password = loginFormState.formControls.password.value;
     const credentials = users.find(user => user.phone === phone && user.password === password)
 
-    if(credentials) {
+    if (credentials) {
       const newAppData = {
         ...appData,
         active: true,
@@ -119,72 +111,69 @@ const Login = (props) => {
   }
 
 
-return (
-    <div className="container px-4 py-5 mx-auto">
-      <div className="d-flex flex-lg-row">
-        <div className={styles.card_left}>
-          <div className="row justify-content-center my-auto">
-            <div className="col-md-8 col-10 my-5">
-              <div className="row justify-content-center px-3 mb-3">
-                <img className={styles.logo} id="logo" src={logo} alt="logo"/>
-              </div>
-              <h3 className="mb-5 text-center">{props.siteData.name}</h3>
-              <h6>Please login to your account</h6>
-
-              <form>
-                {Object.keys(loginFormState.formControls).map((formControlName, index) => {
-                  const control = loginFormState.formControls[formControlName];
-                  return (
-                      <Input
-                          key={index}
-                          type={control.type}
-                          value={control.value}
-                          valid={control.valid}
-                          touched={control.touched}
-                          label={control.label}
-                          placeholder={control.placeholder}
-                          shouldValidate={!!control.validation}
-                          validationClass={control.validation.class}
-                          onChange={e => onChangeHandler(e, formControlName)}
-                      />
-                  )
-                })}
-                <Button
-                    type={'secondary-block'}
-                    classes={'py-2 my-4'}
-                    onClick={checkUser}
-                    disabled={!loginFormState.isFormValid}
-                >
-                  Login to JustWatch
-                </Button>
-              </form>
-
-              <div className="row justify-content-center my-2">
-                <Link to='/forgotPass'>
-                  <small className="text-muted">Forgot Password?</small>
-                </Link>
+  return (
+      <div className="container px-4 py-5 mx-auto">
+        <div className="d-flex flex-lg-row">
+          <div className={styles.card_left}>
+            <div className="row justify-content-center my-auto">
+              <div className="col-md-8 col-10 my-5">
+                <div className="row justify-content-center px-3 mb-3">
+                  <img className={styles.logo} id="logo" src={logo} alt="logo"/>
+                </div>
+                <h3 className="mb-5 text-center">{props.siteData.name}</h3>
+                <h6>Please login to your account</h6>
+                <form>
+                  {Object.keys(loginFormState.formControls).map((formControlName, index) => {
+                    const control = loginFormState.formControls[formControlName];
+                    return (
+                        <Input
+                            key={index}
+                            type={control.type}
+                            value={control.value}
+                            valid={control.valid}
+                            touched={control.touched}
+                            label={control.label}
+                            placeholder={control.placeholder}
+                            shouldValidate={!!control.validation}
+                            onChange={e => onChangeHandler(e, formControlName)}
+                        />
+                    )
+                  })}
+                  <Button
+                      type={'secondary-block'}
+                      classes={'py-2 my-4'}
+                      onClick={checkUser}
+                      disabled={!loginFormState.isFormValid}
+                  >
+                    Login to JustWatch
+                  </Button>
+                </form>
+                <div className="row justify-content-center my-2">
+                  <Link to='/forgotPass'>
+                    <small className="text-muted">Forgot Password?</small>
+                  </Link>
+                </div>
               </div>
             </div>
+            <div className="bottom text-center mb-5">
+              <p className="sm-text mx-auto mb-3">Don't have an account?
+                <Button
+                    type={'secondary-inline'}
+                    classes={"ml-2 py-2 px-3"}
+                    onClick={toRegister}
+                >
+                  Create new</Button>
+              </p>
+            </div>
           </div>
-          <div className="bottom text-center mb-5">
-            <p className="sm-text mx-auto mb-3">Don't have an account?
-              <Button
-                  type={'secondary-inline'}
-                  classes={"ml-2 py-2 px-3"}
-                  onClick={toRegister}
-              >
-                Create new</Button>
-            </p>
-          </div>
-        </div>
-        <div className={`card ${styles.card_right}`}>
-          <div className="my-auto mx-md-5 px-md-5 right">
-            <h3>{props.siteData.title}</h3> <small>{props.siteData.text}</small>
+          <div className={`card ${styles.card_right}`}>
+            <div className="my-auto mx-md-5 px-md-5 right">
+              <h3>{props.siteData.title}</h3> <small>{props.siteData.text}</small>
+            </div>
           </div>
         </div>
       </div>
-    </div>
-)
+  )
 }
 
 export default Login;
