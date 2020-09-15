@@ -1,7 +1,7 @@
 import React from "react";
 import styles from "./Card.module.scss"
 import defaultPoster from "../../assets/poster.jpg"
-import {withRouter, Link} from "react-router-dom";
+import {Link} from "react-router-dom";
 
 
 const Card = (props) => {
@@ -33,4 +33,4 @@ const Card = (props) => {
   )
 }
 
-export default withRouter(Card);
+export default Card;

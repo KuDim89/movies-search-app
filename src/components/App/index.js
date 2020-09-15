@@ -9,10 +9,11 @@ import Movies from "../Movies";
 import ForgotPass from "../ForgotPass";
 import {AppProvider} from "../../context";
 import MovieInformation from "../MovieInformation";
-import {getDataCollection} from "../../utils/api";
+import {getDataCollection} from "../../utils/firebaseFunctions/getDataCollection";
 import {findId} from "../../utils/findId";
 import Loader from "../Loader";
 import NotFound from "../NotFound";
+import Info from "../Info";
 
 
 export default function  App() {
@@ -63,6 +64,9 @@ export default function  App() {
                     </Route>
                     <Route exact path="/movies/:id">
                       {appData.active ? <MovieInformation /> : <Redirect to="/" />}
+                    </Route>
+                    <Route exact path="/info">
+                      {appData.active ? <Info /> : <Redirect to="/" />}
                     </Route>
                     <Route component={NotFound}/>
                   </Switch>

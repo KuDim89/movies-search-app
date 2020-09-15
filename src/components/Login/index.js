@@ -3,22 +3,103 @@ import styles from "./Login.module.scss"
 import logo from "./../../assets/movie-logo.jpg"
 import {Link, useHistory} from "react-router-dom";
 import AppContext from "../../context";
+import Input from "../UI/Input";
+import {validateControl} from "../../utils/formFunctions/validateControl";
+import {createControl} from "../../utils/formFunctions/createFormControl";
+import Button from "../UI/Button";
 
 const Login = (props) => {
-  const [phone, setPhone] = useState('');
-  const [password, setPassword] = useState('');
-  const [validate, setValidate] = useState(false);
+  const initialState = {
+    isFormValid: false,
+    formControls: createFormControls()
+  }
+
   const {appData, setAppData} = useContext(AppContext)
+  const [loginFormState, setLoginFormState] = useState(initialState);
   const history = useHistory();
+
+  function createFormControls() {
+    return {
+      phone: createControl(
+          {
+            type: 'text',
+            label: 'phone',
+            placeholder: '+385619086171',
+            value: ''
+          },
+          {
+            phone: true,
+          }),
+      password: createControl(
+          {
+            type: 'password',
+            label: 'password',
+            placeholder: 'password',
+            value: ''
+          },
+          {
+            minLength: 6
+          })
+    }
+  }
 
   useEffect(() => {
     appData.active && history.push("/movies")
+  }, [])
 
-    phone.match(/^((8|\+{0,9})[\- ]?)?(\(?\d{3,4}\)?[\- ]?)?[\d\- ]{5,10}$/)
-    && password.length > 6
-    && setValidate(true)
+  const onChangeHandler = (event, formControlName) => {
+    const loginFormControls = {...loginFormState.formControls};
+    const loginControl = {...loginFormControls[formControlName]};
 
-  }, [phone, password])
+    loginControl.value = event.target.value
+    loginControl.touched = true
+
+    loginControl.valid = validateControl(loginControl.value, loginControl.validation)
+
+    loginFormControls[formControlName] = loginControl
+
+    let isFormValid = true;
+    Object.keys(loginFormControls).map(name => {
+      isFormValid = loginFormControls[name].valid && isFormValid
+    })
+
+    setLoginFormState({formControls: loginFormControls, isFormValid})
+  }
+
+  const checkUser = (event) => {
+    event.preventDefault()
+    const users = [...props.users];
+    const phone = loginFormState.formControls.phone.value;
+    const password = loginFormState.formControls.password.value;
+    const credentials = users.find(user => user.phone === phone && user.password === password)
+
+    if (credentials) {
+      const newAppData = {
+        ...appData,
+        active: true,
+        loginPage: false
+      }
+      history.push("/movies")
+      setAppData(newAppData)
+    } else {
+      const loginState = {...loginFormState}
+      const controls = {...loginState.formControls}
+      Object.keys(controls).map(controlName => {
+        controls[controlName].validation.class = "is-invalid";
+        controls[controlName].valid = false;
+        controls[controlName].value = "";
+        loginState.isFormValid = false;
+      })
+      const newLoginState = {
+        ...loginState,
+        formControls: {
+          ...controls
+        }
+      }
+      setLoginFormState(newLoginState)
+    }
+  }
+
 
   const toRegister = () => {
     const newAppData = {
@@ -29,18 +110,6 @@ const Login = (props) => {
     setAppData(newAppData)
   }
 
-  const checkUser = () => {
-    const siteArray = props.users.slice(0).find(user => user.phone === phone && user.password === password)
-    if (siteArray) {
-      const newAppData = {
-        ...appData,
-        active: true,
-        loginPage: false
-      }
-      history.push("/movies")
-      setAppData(newAppData)
-    }
-  }
 
   return (
       <div className="container px-4 py-5 mx-auto">
@@ -53,42 +122,32 @@ const Login = (props) => {
                 </div>
                 <h3 className="mb-5 text-center">{props.siteData.name}</h3>
                 <h6>Please login to your account</h6>
-
                 <form>
-                  <div className="form-group">
-                    <label className="form-control-label text-muted">Phone</label>
-                    <input
-                        type="text"
-                        name="phone"
-                        placeholder="+385619086171"
-                        className={`form-control ${phone.match(/^((8|\+{0,9})[\- ]?)?(\(?\d{3,4}\)?[\- ]?)?[\d\- ]{12,13}$/) ? "is-valid" : "is-invalid"}`}
-                        onChange={e => setPhone(e.target.value)}
-                    />
-                  </div>
-
-
-                  <div className="form-group">
-                    <label className="form-control-label text-muted">Password</label>
-                    <input
-                        type="password"
-                        name="password"
-                        autoComplete="off"
-                        placeholder="Password"
-                        className={`form-control ${password.length > 6 ? "is-valid" : "is-invalid"}`}
-                        onChange={e => setPassword(e.target.value)}
-                    />
-                  </div>
-
-                  <div className="row justify-content-center my-3 px-3">
-                    <button
-                        className="btn-secondary btn-block btn-color py-2"
-                        onClick={checkUser}
-                        disabled={!validate}
-                    >Login to JustWatch
-                    </button>
-                  </div>
+                  {Object.keys(loginFormState.formControls).map((formControlName, index) => {
+                    const control = loginFormState.formControls[formControlName];
+                    return (
+                        <Input
+                            key={index}
+                            type={control.type}
+                            value={control.value}
+                            valid={control.valid}
+                            touched={control.touched}
+                            label={control.label}
+                            placeholder={control.placeholder}
+                            shouldValidate={!!control.validation}
+                            onChange={e => onChangeHandler(e, formControlName)}
+                        />
+                    )
+                  })}
+                  <Button
+                      type={'secondary-block'}
+                      classes={'py-2 my-4'}
+                      onClick={checkUser}
+                      disabled={!loginFormState.isFormValid}
+                  >
+                    Login to JustWatch
+                  </Button>
                 </form>
-
                 <div className="row justify-content-center my-2">
                   <Link to='/forgotPass'>
                     <small className="text-muted">Forgot Password?</small>
@@ -98,10 +157,12 @@ const Login = (props) => {
             </div>
             <div className="bottom text-center mb-5">
               <p className="sm-text mx-auto mb-3">Don't have an account?
-                <button
-                    className="btn-secondary btn-color ml-2 py-2 px-3"
+                <Button
+                    type={'secondary-inline'}
+                    classes={"ml-2 py-2 px-3"}
                     onClick={toRegister}
-                >Create new</button>
+                >
+                  Create new</Button>
               </p>
             </div>
           </div>

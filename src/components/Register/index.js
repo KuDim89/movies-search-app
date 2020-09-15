@@ -1,46 +1,125 @@
-import React, {useEffect, useState} from "react";
+import React, {useContext, useEffect, useState} from "react";
 import styles from "./Register.module.scss";
 import logo from "../../assets/movie-logo.jpg";
-import {setData} from "../../utils/set";
+import {setData} from "../../utils/firebaseFunctions/setData";
 import {useHistory} from "react-router-dom";
+import {createControl} from "../../utils/formFunctions/createFormControl";
+import Button from "../UI/Button";
+import Input from "../UI/Input";
+import Checkbox from "../UI/Checkbox";
+import AppContext from "../../context";
+import {validateControl} from "../../utils/formFunctions/validateControl";
+
 
 const Register = (props) => {
-  const [name, setName] = useState('');
-  const [surname, setSurname] = useState('');
-  const [email, setEmail] = useState('');
-  const [phone, setPhone] = useState('');
-  const [password, setPassword] = useState('');
-  const [policy, setPolicy] = useState(false);
-  const [validate, setValidate] = useState(false);
+  const initialState = {
+    isFormValid: false,
+    formControls: createFormControls()
+  }
+
+  const {appData} = useContext(AppContext)
+  const [registerFormState, setRegisterFormState] = useState(initialState);
   const history = useHistory();
 
-  useEffect(() => {
-    if (name.length > 0
-        && surname.length > 0
-        && email.match(/.+@.+..+/i)
-        && phone.match(/^((8|\+{0,9})[\- ]?)?(\(?\d{3,4}\)?[\- ]?)?[\d\- ]{5,10}$/)
-        && password.length > 6
-        && policy === true)
-    {
-      setValidate(true)
+  function createFormControls() {
+    return {
+      name: createControl(
+          {
+            type: 'text',
+            label: 'name',
+            value: ''
+          },
+          {
+            minLength: 2
+          }),
+      surname: createControl(
+          {
+            type: 'text',
+            label: 'surname',
+            value: ''
+          },
+          {
+            minLength: 2
+          }),
+      email: createControl(
+          {
+            type: "email",
+            label: "email",
+            value: ''
+          },
+          {
+            email: true
+          }),
+      phone: createControl(
+          {
+            type: "text",
+            label: "phone",
+            placeholder: "For example +385619086171",
+            value: ''
+          },
+          {
+            phone: true
+          }),
+      password: createControl(
+          {
+            type: "password",
+            label: "password",
+            placeholder: "6+ characters",
+            autoComplete: "off",
+            value: ''
+          },
+          {
+            minLength: 6
+          }),
+      policy: createControl(
+          {
+            type: "checkbox",
+            label: "policy",
+            checked: false,
+          },
+          {
+            checked: true
+          })
     }
-  },[name, surname, email, phone, password, policy])
+  }
+
+  useEffect(() => {
+    appData.active && history.push("/movies")
+  })
+
+  const onChangeHandler = (event, formControlName) => {
+    const registerFormControls = {...registerFormState.formControls};
+    const registerControl = {...registerFormControls[formControlName]};
+
+    registerControl.value = event;
+    registerControl.touched = true;
+
+    registerControl.checked = !registerControl.checked;
+
+
+    registerControl.valid = validateControl(registerControl.value, registerControl.validation);
+
+    registerFormControls[formControlName] = registerControl;
+
+    let isFormValid = true;
+    Object.keys(registerFormControls).map(name => {
+      isFormValid = registerFormControls[name].valid && isFormValid
+    })
+
+    setRegisterFormState({formControls: registerFormControls, isFormValid})
+  }
 
   const handleSubmit = (event) => {
-    event.preventDefault()
+    event.preventDefault();
+    const registerFormControls = {...registerFormState.formControls};
+    const newUser = {};
 
-    if(validate){
-      const newUser = {
-            name: name,
-            surname: surname,
-            email: email,
-            phone: phone,
-            password: password,
-            policy: policy
-      }
-      setData('users', newUser)
-      history.push("/")
-    }
+    Object.keys(registerFormControls).map(name => {
+      newUser[name] = registerFormControls[name].value;
+    })
+
+    setData('users', newUser)
+    history.push("/")
   }
 
   return (
@@ -50,100 +129,71 @@ const Register = (props) => {
             <div className="row justify-content-center my-auto">
               <div className="col-12">
                 <div className="row justify-content-center px-3 mb-3">
-                  <img className={styles.logo} id="logo" src={logo} alt="logo" />
+                  <img id="logo" src={logo} alt="logo"/>
                 </div>
                 <h3 className="mb-5 text-center">{props.siteData.name}</h3>
 
                 <form>
-                  <div className="form-group">
-                    <div className="row justify-content-center my-auto">
-                      <div className="col-6">
-                        <label className="form-control-label text-muted">Name</label>
-                        <input
-                            type="text"
-                            name="name"
-                            className={`form-control ${name ? "is-valid" : "is-invalid"}`}
-                            value={name}
-                            onChange={e => setName(e.target.value)}
-                        />
-
-                      </div>
-                      <div className="col-6">
-                        <label className="form-control-label text-muted">Surname</label>
-                        <input
-                            type="text"
-                            name="surname"
-                            className={`form-control ${surname ? "is-valid" : "is-invalid"}`}
-                            value={surname}
-                            onChange={e => setSurname(e.target.value)}
-                        />
-
-                      </div>
-                    </div>
+                  <div className="row">
+                  {Object.keys(registerFormState.formControls).map((formControlName, index) => {
+                    const control = registerFormState.formControls[formControlName];
+                    if (index > 1) {
+                      return
+                    }
+                    return (
+                          <div className="col-6" key={index}>
+                            <Input
+                                type={control.type}
+                                value={control.value}
+                                valid={control.valid}
+                                touched={control.touched}
+                                label={control.label}
+                                placeholder={control.placeholder}
+                                shouldValidate={!!control.validation}
+                                onChange={e => onChangeHandler(e.target.value, formControlName)}
+                            />
+                          </div>
+                    )
+                  })}
                   </div>
+                  {Object.keys(registerFormState.formControls).map((formControlName, index) => {
+                    const control = registerFormState.formControls[formControlName];
+                    const objectLength = Object.keys(registerFormState.formControls).length
+                    if (index > 1 && index < objectLength - 1) {
+                      return (
+                          <Input
+                              key={index}
+                              type={control.type}
+                              value={control.value}
+                              valid={control.valid}
+                              touched={control.touched}
+                              label={control.label}
+                              placeholder={control.placeholder}
+                              shouldValidate={!!control.validation}
+                              onChange={e => onChangeHandler(e.target.value, formControlName)}
+                          />
+                      )
+                    }
+                    return null
+                  })}
 
-                  <div className="form-group">
-                    <label className="form-control-label text-muted">Email</label>
-                    <input
-                        type="email"
-                        name="email"
-                        className={`form-control ${email.match(/.+@.+..+/i) ? "is-valid" : "is-invalid"}`}
-                        value={email}
-                        onChange={e => setEmail(e.target.value)}
-                    />
-
-                  </div>
-
-                  <div className="form-group">
-                    <label className="form-control-label text-muted">Phone</label>
-                    <input
-                        type="text"
-                        name="phone"
-                        placeholder="For example +385619086171"
-                        className={`form-control ${phone.match(/^((8|\+{0,9})[\- ]?)?(\(?\d{3,4}\)?[\- ]?)?[\d\- ]{12,13}$/) ? "is-valid" : "is-invalid"}`}
-                        value={phone}
-                        onChange={e => setPhone(e.target.value)}
-                    />
-                  </div>
-
-                  <div className="form-group">
-                    <label className="form-control-label text-muted">Password</label>
-                    <input
-                        type="password"
-                        name="password"
-                        placeholder="6+ characters"
-                        autoComplete="off"
-                        className={`form-control ${password.length > 6 ? "is-valid" : "is-invalid"}`}
-                        value={password}
-                        onChange={e => setPassword(e.target.value)}
-                    />
-                  </div>
-
-                  <div className="form-check">
-                    <input
-                        type="checkbox"
-                        name="policy"
-                        className={`form-check-input ${policy ? "is-valid" : "is-invalid"}`}
-
-                        checked={policy}
-                        onChange={e => setPolicy(e.target.checked)}
-                    />
-                    <label className="form-check-label">
-                      Creating an account means you’re okay with our
-                      <a href="#" className="text-muted"><b> Terms of Service</b></a>,
-                      <a href="#" className="text-muted"><b> Privacy Policy</b></a>, and our default
-                      <a href="#" className="text-muted"><b> Notification Settings</b></a>.
-                    </label>
-                  </div>
-
-                  <div className="row justify-content-center my-3 px-3">
-                    <button
-                        type="submit"
-                        className="btn-secondary btn-block btn-color py-2"
-                        disabled={!validate}
-                        onClick={handleSubmit}
-                    >Create Account</button>
-                  </div>
+                  <Checkbox
+                      type={registerFormState.formControls.policy.type}
+                      valid={registerFormState.formControls.policy.valid}
+                      touched={registerFormState.formControls.policy.touched}
+                      label={registerFormState.formControls.policy.label}
+                      shouldValidate={!!registerFormState.formControls.policy.validation}
+                      checked={registerFormState.formControls.policy.checked}
+                      onChange={e => onChangeHandler(e.target.checked, 'policy')}
+                  />
+                  <Button
+                      type="secondary-block"
+                      classes="py-2 my-4"
+                      onClick={handleSubmit}
+                      disabled={!registerFormState.isFormValid}
+                  >
+                    Create Account
+                  </Button>
                 </form>
               </div>
             </div>
