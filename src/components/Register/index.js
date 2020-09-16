@@ -17,9 +17,20 @@ const Register = (props) => {
     formControls: createFormControls()
   }
 
-  const {appData} = useContext(AppContext)
+  const {appData, setAppData} = useContext(AppContext)
   const [registerFormState, setRegisterFormState] = useState(initialState);
   const history = useHistory();
+
+  useEffect(() => {
+    appData.active && history.push("/movies")
+    if (appData.loginPage === true) {
+      const newAppData = {
+        ...appData,
+        loginPage: false
+      }
+      setAppData(newAppData)
+    }
+  })
 
   function createFormControls() {
     return {
@@ -54,7 +65,7 @@ const Register = (props) => {
           {
             type: "text",
             label: "phone",
-            placeholder: "For example +385619086171",
+            placeholder: "+385619086171",
             value: ''
           },
           {
@@ -82,10 +93,6 @@ const Register = (props) => {
           })
     }
   }
-
-  useEffect(() => {
-    appData.active && history.push("/movies")
-  })
 
   const onChangeHandler = (event, formControlName) => {
     const registerFormControls = {...registerFormState.formControls};
@@ -135,12 +142,12 @@ const Register = (props) => {
 
                 <form>
                   <div className="row">
-                  {Object.keys(registerFormState.formControls).map((formControlName, index) => {
-                    const control = registerFormState.formControls[formControlName];
-                    if (index > 1) {
-                      return
-                    }
-                    return (
+                    {Object.keys(registerFormState.formControls).map((formControlName, index) => {
+                      const control = registerFormState.formControls[formControlName];
+                      if (index > 1) {
+                        return
+                      }
+                      return (
                           <div className="col-6" key={index}>
                             <Input
                                 type={control.type}
@@ -153,8 +160,8 @@ const Register = (props) => {
                                 onChange={e => onChangeHandler(e.target.value, formControlName)}
                             />
                           </div>
-                    )
-                  })}
+                      )
+                    })}
                   </div>
                   {Object.keys(registerFormState.formControls).map((formControlName, index) => {
                     const control = registerFormState.formControls[formControlName];
