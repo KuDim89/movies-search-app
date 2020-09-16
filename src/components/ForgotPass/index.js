@@ -7,6 +7,7 @@ import Button from "../UI/Button";
 import {createControl} from "../../utils/formFunctions/createFormControl";
 import Input from "../UI/Input";
 import {validateControl} from "../../utils/formFunctions/validateControl";
+import {validateForm} from "../../utils/formFunctions/validateForm";
 
 const ForgotPass = (props) => {
   const initialState = {
@@ -66,10 +67,7 @@ const ForgotPass = (props) => {
 
     forgotPassFormControls[formControlName] = forgotPassControl
 
-    let isFormValid = true;
-    Object.keys(forgotPassFormControls).map(name => {
-      isFormValid = forgotPassFormControls[name].valid && isFormValid
-    })
+    const isFormValid = validateForm(forgotPassFormControls);
 
     setForgotPassState({formControls: forgotPassFormControls, isFormValid})
   }
@@ -82,7 +80,7 @@ const ForgotPass = (props) => {
     history.push("/register")
   }
 
-  const sendPassword = (event, phoneValue, emailValue) => {
+  const sendPassword = (event) => {
     event.preventDefault()
     const pageStateForgotPass = {...forgotPassState}
     const forgotPassControls = {...pageStateForgotPass.formControls}

@@ -9,6 +9,7 @@ import Input from "../UI/Input";
 import Checkbox from "../UI/Checkbox";
 import AppContext from "../../context";
 import {validateControl} from "../../utils/formFunctions/validateControl";
+import {validateForm} from "../../utils/formFunctions/validateForm";
 
 
 const Register = (props) => {
@@ -108,10 +109,7 @@ const Register = (props) => {
 
     registerFormControls[formControlName] = registerControl;
 
-    let isFormValid = true;
-    Object.keys(registerFormControls).map(name => {
-      isFormValid = registerFormControls[name].valid && isFormValid
-    })
+    const isFormValid = validateForm(registerFormControls);
 
     setRegisterFormState({formControls: registerFormControls, isFormValid})
   }

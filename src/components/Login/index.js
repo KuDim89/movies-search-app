@@ -7,6 +7,7 @@ import Input from "../UI/Input";
 import {validateControl} from "../../utils/formFunctions/validateControl";
 import {createControl} from "../../utils/formFunctions/createFormControl";
 import Button from "../UI/Button";
+import {validateForm} from "../../utils/formFunctions/validateForm";
 
 const Login = (props) => {
   const initialState = {
@@ -65,10 +66,7 @@ const Login = (props) => {
 
     loginFormControls[formControlName] = loginControl
 
-    let isFormValid = true;
-    Object.keys(loginFormControls).map(name => {
-      isFormValid = loginFormControls[name].valid && isFormValid
-    })
+    const isFormValid = validateForm(loginFormControls);
 
     setLoginFormState({formControls: loginFormControls, isFormValid})
   }
@@ -91,7 +89,6 @@ const Login = (props) => {
       const loginState = {...loginFormState}
       const controls = {...loginState.formControls}
       Object.keys(controls).map(controlName => {
-        controls[controlName].validation.class = "is-invalid";
         controls[controlName].valid = false;
         controls[controlName].value = "";
         loginState.isFormValid = false;
