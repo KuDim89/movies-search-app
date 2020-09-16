@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from "react";
+import React, {useContext, useEffect, useState} from "react";
 import styles from './Movies.module.scss'
 import Search from "../Search";
 import Card from "../Card";
@@ -6,6 +6,7 @@ import {randomWord} from "../../utils/randomWord";
 import {getMoviesArr} from "../../utils/omdbFunctions/getMoviesArr";
 import Loader from "../Loader";
 import Modal from "../Modal";
+import AppContext from "../../context";
 
 const objectErrorText = {
   MOVIE_NOT_FOUND : "Movie not found!",
@@ -46,6 +47,7 @@ const defaultMoviesArr = [
 ]
 
 const Movies = () => {
+    const {appData, setAppData} = useContext(AppContext)
     const initialMoviesData = JSON.parse(window.localStorage.getItem("Movies")) || [];
     const [loading, setLoading] = useState(true);
     const [movies, setMovies] = useState(initialMoviesData);
@@ -55,6 +57,15 @@ const Movies = () => {
 
   useEffect(() => {
     window.localStorage.setItem("Movies", JSON.stringify(movies))
+
+    if(appData.loginPage === true) {
+      const newAppData = {
+        ...appData,
+        loginPage: false
+      }
+      setAppData(newAppData)
+    }
+
     if (movies.length === 0 && !error) {
       return randomMovieArr();
     }

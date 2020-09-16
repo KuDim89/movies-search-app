@@ -18,6 +18,17 @@ const Login = (props) => {
   const [loginFormState, setLoginFormState] = useState(initialState);
   const history = useHistory();
 
+  useEffect(() => {
+    appData.active && history.push("/movies")
+    if (appData.loginPage === false) {
+      const newAppData = {
+        ...appData,
+        loginPage: true
+      }
+      setAppData(newAppData)
+    }
+  }, [])
+
   function createFormControls() {
     return {
       phone: createControl(
@@ -43,15 +54,11 @@ const Login = (props) => {
     }
   }
 
-  useEffect(() => {
-    appData.active && history.push("/movies")
-  }, [])
-
   const onChangeHandler = (event, formControlName) => {
     const loginFormControls = {...loginFormState.formControls};
     const loginControl = {...loginFormControls[formControlName]};
 
-    loginControl.value = event.target.value
+    loginControl.value = event
     loginControl.touched = true
 
     loginControl.valid = validateControl(loginControl.value, loginControl.validation)
@@ -77,7 +84,6 @@ const Login = (props) => {
       const newAppData = {
         ...appData,
         active: true,
-        loginPage: false
       }
       history.push("/movies")
       setAppData(newAppData)
@@ -100,16 +106,9 @@ const Login = (props) => {
     }
   }
 
-
   const toRegister = () => {
-    const newAppData = {
-      ...appData,
-      loginPage: false
-    }
     history.push("/register")
-    setAppData(newAppData)
   }
-
 
   return (
       <div className="container px-4 py-5 mx-auto">
@@ -135,7 +134,7 @@ const Login = (props) => {
                             label={control.label}
                             placeholder={control.placeholder}
                             shouldValidate={!!control.validation}
-                            onChange={e => onChangeHandler(e, formControlName)}
+                            onChange={e => onChangeHandler(e.target.value, formControlName)}
                         />
                     )
                   })}
