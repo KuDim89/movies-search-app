@@ -1,24 +1,23 @@
 import React, {useEffect, useState} from "react";
-import {Link, withRouter} from "react-router-dom";
+import {Link, withRouter, useHistory} from "react-router-dom";
 import styles from "./MovieInformation.module.scss"
 import {getMoviesInfo} from "../../utils/omdbFunctions/getMovieInfo";
 import defaultPoster from "../../assets/poster.jpg"
-import Modal from "../Modal";
-import Loader from "../Loader";
+import Modal from "../ErrorModal";
+import Loader from "../UI/Loader";
 
 const MovieInformation = (props) => {
   const [loading, setLoading] = useState(true);
   const [moviesInfo, setMoviesInfo] = useState({});
   const [error, setError] = useState("");
-
-  const errorText = "We have problems, try re-login please!!!";
+  const history = useHistory();
 
   useEffect(() => {
     const id = props.match.params.id
 
     getMoviesInfo(id).then(data => {
       if(data === undefined) {
-        return setError("Responce undifined")
+        setError("Responce undifined")
       }
       if (data.Response === "True" && loading) {
         setMoviesInfo(data)
@@ -30,6 +29,7 @@ const MovieInformation = (props) => {
   },[])
 
   const closeModal = () => {
+    history.push("/movies")
     setError("");
   }
 
@@ -172,7 +172,7 @@ const MovieInformation = (props) => {
             </div>
           </div>
         </div>)}
-        {error && <Modal text={errorText} error={error} closeModal={closeModal} />}
+        {error && <Modal error={error} closeModal={closeModal} />}
       </>
   )
 }

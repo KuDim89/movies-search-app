@@ -1,6 +1,6 @@
 import React from "react";
 import styles from "./Card.module.scss"
-import defaultPoster from "../../assets/poster.jpg"
+import defaultPoster from "../../../assets/poster.jpg"
 import {Link} from "react-router-dom";
 
 
