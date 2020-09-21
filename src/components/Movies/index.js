@@ -1,19 +1,12 @@
 import React, {useContext, useEffect, useState} from "react";
 import styles from './Movies.module.scss'
 import Search from "../Search";
-import Card from "../Card";
+import Card from "./Card";
 import {randomWord} from "../../utils/randomWord";
 import {getMoviesArr} from "../../utils/omdbFunctions/getMoviesArr";
-import Loader from "../Loader";
-import Modal from "../Modal";
+import Loader from "../UI/Loader";
+import Modal from "../ErrorModal";
 import AppContext from "../../context";
-
-const objectErrorText = {
-  MOVIE_NOT_FOUND : "Movie not found!",
-  TOO_MANY_RESULTS : "Too many results.",
-  INCORRECT_IMDB_ID : "Incorrect IMDb ID.",
-  REQUEST_LIMIT_REACHED : "Request limit reached!"
-}
 
 const defaultMoviesArr = [
   {
@@ -47,110 +40,116 @@ const defaultMoviesArr = [
 ]
 
 const Movies = () => {
-    const {appData, setAppData} = useContext(AppContext)
-    const initialMoviesData = JSON.parse(window.localStorage.getItem("Movies")) || [];
-    const [loading, setLoading] = useState(true);
-    const [movies, setMovies] = useState(initialMoviesData);
-    const [error, setError] = useState('')
-    const [errorText, setErrorText] = useState('')
-    let count = 0; // 0
+  const initialState = {
+    movies: JSON.parse(window.localStorage.getItem("movies")) || [],
+    loading: true,
+    error: ""
+  }
+
+  const {appData, setAppData} = useContext(AppContext)
+  const [movieState, setMovieState] = useState(initialState);
 
   useEffect(() => {
-    window.localStorage.setItem("Movies", JSON.stringify(movies))
-
-    if(appData.loginPage === true) {
+    if (appData.loginPage === true) {
       const newAppData = {
         ...appData,
         loginPage: false
       }
       setAppData(newAppData)
     }
+  }, [])
 
-    if (movies.length === 0 && !error) {
-      return randomMovieArr();
-    }
-    setMovies(movies);
-    setLoading(false);
-  }, [movies])
+  useEffect(() => {
+    window.localStorage.setItem("movies", JSON.stringify(movieState.movies));
 
-  function randomMovieArr()  {
-    if(count < 10){
-      count = count + 1
-      randomWord().then(word => getMoviesArr(word).then(data => {
-        if (data.Response === "True" && loading) {
-          setMovies(data.Search)
-          setLoading(false)
-        } else {
-          randomMovieArr();
-        }
-      }))
+    if (movieState.movies.length === 0 && !movieState.error) {
+      getData();
     } else {
-      getMoviesArr("woman").then(data => {
-        if (data.Response === "True") { // True
-          setMovies(data.Search)
-          setLoading(false)
-        } else {
-          setError(data.Error);
-          defineErrorText(data.Error)
-          setMovies(defaultMoviesArr)
-          setLoading(false)
-        }
+      setMovieState({
+        ...movieState,
+        movies: movieState.movies,
+        loading: false
       })
     }
-  }
+  }, [movieState.movies])
 
-  const search = (string) => {
+  async function search(string) {
+    setMovieState({
+      ...movieState,
+      loading: true
+    });
     const searchValue = string.toString().trim()
-    getMoviesArr(searchValue).then(data => {
+    const data = await getMoviesArr(searchValue);
       if (data.Response === "True") {
-        setMovies(data.Search)
-        setLoading(false)
+        setMovieState({
+          ...movieState,
+          movies: data.Search
+        })
       } else {
-        setError(data.Error)
-        defineErrorText(data.Error)
+        setMovieState({
+          ...movieState,
+          error: data.Error
+        });
       }
-    })
   }
 
-  const defineErrorText = (error) => {
-    switch (error) {
-      case objectErrorText.MOVIE_NOT_FOUND :
-        setErrorText( "It looks like there aren't any great matches for your search. Change your keywords and try again.")
-        break;
-      case objectErrorText.TOO_MANY_RESULTS :
-        setErrorText("Your word very short or it's only symbols. We find too many coincidences. Please enter more longer word without symbols.")
-        break;
-      case objectErrorText.INCORRECT_IMDB_ID :
-        setErrorText("You are forgot enter a word in input. Try enter word again and feel happy.")
-        break;
-      case objectErrorText.REQUEST_LIMIT_REACHED :
-        setErrorText("Please accept our apologies and visit us tomorrow.")
-        break;
-      default:
-        setErrorText("We have problems. Please try again later.")
+  async function getData() {
+    const data = await randomMovieArr(0, 10);
+    data.Response === "True"
+        ? setMovieState({
+          ...movieState,
+          movies: data.Search,
+          loading: false
+        })
+        : setMovieState({
+          ...movieState,
+          movies: defaultMoviesArr,
+          error: data.Error,
+          loading: false
+        })
+  }
+
+  async function randomMovieArr(count, max) {
+    if (count >= max) {
+      return await getMoviesArr("boy")
+    } else {
+      const word = await randomWord();
+      const data = await getMoviesArr(word);
+      if (data.Response === "True" && movieState.loading) {
+        return data
+      } else {
+        if(data.Response === "False" && data.Error === "Movie not found!"){ // <----- ?
+          return await randomMovieArr(count + 1, max);
+        } else {
+          return data;
+        }
+      }
     }
   }
 
   const closeModal = () => {
-    setError('')
+    setMovieState({
+      ...movieState,
+      error: ""
+    });
   }
 
   return (
       <>
         <div className="row w-100">
           <div className="col-12">
-            <Search search={search} error={setError}/>
+            <Search search={search} error={setMovieState}/>
           </div>
         </div>
         <div className={`${styles.cards_wrapper} ${styles.relative}`}>
           <div className="row w-100">
-            { loading && !error
-              ? <Loader />
-              : movies.map(item => (
-                    <Card key={item.imdbID} cardData={item} />
+            {movieState.loading && !movieState.error
+                ? <Loader/>
+                : movieState.movies.map(item => (
+                    <Card key={item.imdbID} cardData={item}/>
                 ))
             }
-            {error && <Modal text={errorText} error={error} closeModal={closeModal} />}
+            {movieState.error && <Modal error={movieState.error} closeModal={closeModal}/>}
           </div>
         </div>
       </>

@@ -18,7 +18,7 @@ const Header = (props) => {
       loginPage: true
     }
 
-    window.localStorage.removeItem('Movies');
+    window.localStorage.removeItem('movies');
     history.push("/")
     setAppData(newAppData);
   }
@@ -91,7 +91,7 @@ const Header = (props) => {
               className={`navbar-toggler ${styles.absolute}`}
               onClick={isTrigger}
           >
-            <span className="navbar-toggler-icon"></span>
+            <span className="navbar-toggler-icon"/>
           </button>
         </nav>
       </header>

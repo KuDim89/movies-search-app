@@ -11,7 +11,7 @@ import {AppProvider} from "../../context";
 import MovieInformation from "../MovieInformation";
 import {getDataCollection} from "../../utils/firebaseFunctions/getDataCollection";
 import {findId} from "../../utils/findId";
-import Loader from "../Loader";
+import Loader from "../UI/Loader";
 import NotFound from "../NotFound";
 import Info from "../Info";
 
