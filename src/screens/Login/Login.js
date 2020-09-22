@@ -1,12 +1,12 @@
 import React, {useContext, useEffect, useState} from "react";
 import styles from "./Login.module.scss"
-import logo from "./../../assets/movie-logo.jpg"
+import logo from "../../assets/movie-logo.jpg"
 import {Link, useHistory} from "react-router-dom";
 import AppContext from "../../context";
-import Input from "../UI/Input";
+import Input from "../../components/Input/Input";
 import {validateControl} from "../../utils/formFunctions/validateControl";
 import {createControl} from "../../utils/formFunctions/createFormControl";
-import Button from "../UI/Button";
+import Button from "../../components/Button/Button";
 import {validateForm} from "../../utils/formFunctions/validateForm";
 
 const Login = (props) => {

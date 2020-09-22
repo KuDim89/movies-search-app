@@ -1,19 +1,19 @@
 import React, {useEffect, useState} from 'react';
 import {Switch, Route, BrowserRouter, Redirect} from "react-router-dom";
 import styles from './App.module.scss';
-import Header from "../Header";
-import Footer from "../Footer";
-import Login from "../Login";
-import Register from "../Register";
-import Movies from "../Movies";
-import ForgotPass from "../ForgotPass";
-import {AppProvider} from "../../context";
-import MovieInformation from "../MovieInformation";
-import {getDataCollection} from "../../utils/firebaseFunctions/getDataCollection";
-import {findId} from "../../utils/findId";
-import Loader from "../UI/Loader";
-import NotFound from "../NotFound";
-import Info from "../Info";
+import Header from "../components/Header/Header";
+import Footer from "../components/Footer/Footer";
+import Login from "../screens/Login/Login";
+import Register from "../screens/Register/Register";
+import Movies from "../screens/Movies/Movies";
+import ForgotPass from "../screens/ForgotPass/ForgotPassword";
+import {AppProvider} from "../context";
+import MovieInformation from "../screens/MovieInformation/MovieInformation";
+import {getDataCollection} from "../utils/firebaseFunctions/getDataCollection";
+import {findId} from "../utils/findId";
+import Loader from "../components/Loader/Loader";
+import NotFound from "../screens/NotFound/NotFound";
+import Info from "../screens/Info/Info";
 
 
 export default function  App() {

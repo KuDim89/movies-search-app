@@ -3,13 +3,13 @@ import styles from "../Login/Login.module.scss";
 import logo from "../../assets/movie-logo.jpg";
 import {useHistory} from "react-router-dom";
 import AppContext from "../../context";
-import Button from "../UI/Button";
+import Button from "../../components/Button/Button";
 import {createControl} from "../../utils/formFunctions/createFormControl";
-import Input from "../UI/Input";
+import Input from "../../components/Input/Input";
 import {validateControl} from "../../utils/formFunctions/validateControl";
 import {validateForm} from "../../utils/formFunctions/validateForm";
 
-const ForgotPass = (props) => {
+const ForgotPassword = (props) => {
   const initialState = {
     isFormValid: false,
     credentials: false,
@@ -183,4 +183,4 @@ const ForgotPass = (props) => {
   )
 }
 
-export default ForgotPass;
+export default ForgotPassword;

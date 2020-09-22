@@ -1,11 +1,11 @@
 import React, {useContext, useEffect, useState} from "react";
 import styles from './Movies.module.scss'
-import Search from "../Search";
-import Card from "./Card";
+import Search from "../../components/Search/Search";
+import Card from "./Card/Card";
 import {randomWord} from "../../utils/randomWord";
 import {getMoviesArr} from "../../utils/omdbFunctions/getMoviesArr";
-import Loader from "../UI/Loader";
-import Modal from "../ErrorModal";
+import Loader from "../../components/Loader/Loader";
+import Modal from "../../components/ErrorModal/ErrorModal";
 import AppContext from "../../context";
 
 const defaultMoviesArr = [

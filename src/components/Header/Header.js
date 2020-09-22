@@ -4,7 +4,7 @@ import styles from "./Header.module.scss"
 import {useHistory} from "react-router-dom";
 import AppContext from "../../context";
 import NavigationLinks from "./NavigationLinks";
-import Button from "../UI/Button";
+import Button from "../Button/Button";
 
 const Header = (props) => {
   const {appData, setAppData} = useContext(AppContext)

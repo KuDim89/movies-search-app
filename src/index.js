@@ -2,13 +2,14 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.scss';
 import '../src/theme/theme.scss'
-import Index from './components/App';
+import App from './App/App';
 
-ReactDOM.render(
-  <React.StrictMode>
-    <Index />
-  </React.StrictMode>,
-  document.getElementById('root')
-);
+const app = (
+    <React.StrictMode>
+      <App />
+    </React.StrictMode>
+)
+
+ReactDOM.render(app, document.getElementById('root'));
 
 

@@ -3,8 +3,8 @@ import {Link, withRouter, useHistory} from "react-router-dom";
 import styles from "./MovieInformation.module.scss"
 import {getMoviesInfo} from "../../utils/omdbFunctions/getMovieInfo";
 import defaultPoster from "../../assets/poster.jpg"
-import Modal from "../ErrorModal";
-import Loader from "../UI/Loader";
+import Modal from "../../components/ErrorModal/ErrorModal";
+import Loader from "../../components/Loader/Loader";
 
 const MovieInformation = (props) => {
   const [loading, setLoading] = useState(true);
