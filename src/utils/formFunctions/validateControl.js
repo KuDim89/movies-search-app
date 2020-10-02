@@ -1,4 +1,4 @@
-export function validateControl(value, validation) {
+export function validateControl(value, validation= null) {
 
   if (!validation) {
     return true;

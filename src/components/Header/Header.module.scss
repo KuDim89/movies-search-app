@@ -1,24 +1,7 @@
-.link {
-  cursor: pointer;
-}
-.header_logo {
-    width: 7rem;
-    border: 1px solid yellow;
-    border-radius: 10px;
-  }
-
-.menu_wrapper {
-  display: flex;
-}
-
 .absolute {
   position: absolute;
   right: 1rem;
-  top: 1.2rem;
-}
-
-.absolute:focus {
-  outline: none;
+  top: 1.3rem;
 }
 
 @media only screen and (max-width: 991px){
@@ -27,7 +10,5 @@
   }
 }
 
-header {
-  width: 100%;
-}
+
 
