@@ -6,7 +6,7 @@ import Footer from "../components/Footer/Footer";
 import Login from "../screens/Login/Login";
 import Register from "../screens/Register/Register";
 import Movies from "../screens/Movies/Movies";
-import ForgotPass from "../screens/ForgotPass/ForgotPassword";
+import ForgotPass from "../screens/ForgotPassword/ForgotPassword";
 import {AppProvider} from "../context";
 import MovieInformation from "../screens/MovieInformation/MovieInformation";
 import {getDataCollection} from "../utils/firebaseFunctions/getDataCollection";
@@ -14,67 +14,103 @@ import {findId} from "../utils/findId";
 import Loader from "../components/Loader/Loader";
 import NotFound from "../screens/NotFound/NotFound";
 import Info from "../screens/Info/Info";
+import ErrorModal from "../components/ErrorModal/ErrorModal";
 
-
-export default function  App() {
-  const appDataDefault = {
+export default function App() {
+  const initialAppData = {
     active: false, // false
     loginPage: true,  // true
   };
 
-  const initialAppData = JSON.parse(window.localStorage.getItem("appData")) || appDataDefault;
+  const initialAppState = {
+    loginData: '',
+    forgotPassData: '',
+    otherInfoData: '',
+    users: '',
+    loading: true,
+    error: null
+  }
+
   const [appData, setAppData] = useState(initialAppData);
-  const [loginData, setLoginData] = useState('');
-  const [forgotPassData, setForgotPassData] = useState('');
-  const [otherInfoData, setOtherInfoData] = useState('');
-  const [users, setUsers] = useState('');
-  const [loading, setLoading] = useState(true);
+  const [appState, setAppState] = useState(initialAppState);
 
   useEffect(() => {
-    getDataCollection("siteData")
-        .then( data => {
-              setLoginData(findId(data, 'login'))
-              setForgotPassData(findId(data, 'forgotPass'))
-              setOtherInfoData(findId(data, 'otherInfo'))
-              setLoading(false);
-            }
-        );
-    getDataCollection("users").then(setUsers);
-    window.localStorage.setItem("appData", JSON.stringify(appData))
-  }, [appData])
+    getAllData();
+  }, [appData.active])
+
+
+  async function getAllData() {
+    try {
+      const siteData = await getDataCollection("siteData");
+      const userData = await getDataCollection("users");
+
+      const newState = {
+        ...appState,
+        loginData: findId(siteData, 'login'),
+        forgotPassData: findId(siteData, 'forgotPass'),
+        otherInfoData: findId(siteData, 'otherInfo'),
+        users: userData,
+        loading: false
+      }
+      setAppState(newState)
+
+    } catch (error) {
+      const newState = {
+        ...appState,
+        error: error.message,
+        loading: false
+      }
+      setAppState(newState)
+    }
+  }
+
+  const closeModal = () => {
+    getAllData();
+    setAppState({
+      ...appState,
+      loading: true,
+      error: null
+    })
+  }
 
   return (
-        <AppProvider value={{appData, setAppData}}>
-          <BrowserRouter>
-            <div className={styles.App}>
-                <Header />
-                <div className="container">
-                  <Switch>
-                    <Route exact path='/'>
-                      {loading ? <Loader /> : <Login siteData={loginData} users={users}/>}
-                    </Route>
-                    <Route exact path='/register'>
-                      {loading ? <Loader /> : <Register siteData={loginData}/>}
-                    </Route>
-                    <Route exact path='/forgotPass'>
-                      {loading ? <Loader /> : <ForgotPass siteData={forgotPassData} users={users}/>}
-                    </Route>
-                    <Route exact path="/movies">
-                      {appData.active ? <Movies /> : <Redirect to="/" />}
-                    </Route>
-                    <Route exact path="/movies/:id">
-                      {appData.active ? <MovieInformation /> : <Redirect to="/" />}
-                    </Route>
-                    <Route exact path="/info">
-                      {appData.active ? <Info /> : <Redirect to="/" />}
-                    </Route>
-                    <Route component={NotFound}/>
-                  </Switch>
+      <>
+        {appState.error
+            ? <ErrorModal error={appState.error} closeModal={closeModal}/>
+            : <AppProvider value={{appData, setAppData}}>
+              <BrowserRouter>
+                <div className={styles.App}>
+                  <Header/>
+                  <div className="container">
+                    <Switch>
+                      <Route exact path='/'>
+                        {appState.loading ? <Loader/> : <Login siteData={appState.loginData} users={appState.users}/>}
+                      </Route>
+                      <Route exact path='/register'>
+                        {appState.loading ? <Loader/> : <Register siteData={appState.loginData}/>}
+                      </Route>
+                      <Route exact path='/forgotPass'>
+                        {appState.loading ? <Loader/> :
+                            <ForgotPass siteData={appState.forgotPassData} users={appState.users}/>}
+                      </Route>
+                      <Route exact path="/movies">
+                        {appData.active ? <Movies/> : <Redirect to="/"/>}
+                      </Route>
+                      <Route exact path="/movies/:id">
+                        {appData.active ? <MovieInformation/> : <Redirect to="/"/>}
+                      </Route>
+                      <Route exact path="/info">
+                        {appData.active ? <Info/> : <Redirect to="/"/>}
+                      </Route>
+                      <Route component={NotFound}/>
+                    </Switch>
+                  </div>
+                  <Footer siteData={appState.otherInfoData}/>
                 </div>
-                <Footer siteData={otherInfoData}/>
-            </div>
-          </BrowserRouter>
-        </AppProvider>
+              </BrowserRouter>
+            </AppProvider>
+        }
+      </>
   );
 }
 

@@ -2,42 +2,112 @@ import React, {useEffect, useState} from "react";
 import {Link, withRouter, useHistory} from "react-router-dom";
 import styles from "./MovieInformation.module.scss"
 import {getMoviesInfo} from "../../utils/omdbFunctions/getMovieInfo";
-import defaultPoster from "../../assets/poster.jpg"
 import Modal from "../../components/ErrorModal/ErrorModal";
 import Loader from "../../components/Loader/Loader";
+import InformationTable from "./InformationTable/InformationTable";
+import Poster from "./Poster/Poster";
 
 const MovieInformation = (props) => {
-  const [loading, setLoading] = useState(true);
-  const [moviesInfo, setMoviesInfo] = useState({});
-  const [error, setError] = useState("");
+  const initialState = {
+    loading: true,
+    movieData: {},
+    error: '',
+  }
+
+  const [movieInformationState, setMovieInformationState] = useState(initialState);
   const history = useHistory();
 
   useEffect(() => {
-    const id = props.match.params.id
+    getIdInfo()
+  }, [])
 
-    getMoviesInfo(id).then(data => {
-      if(data === undefined) {
-        setError("Responce undifined")
-      }
-      if (data.Response === "True" && loading) {
-        setMoviesInfo(data)
-        setLoading(false)
+  async function getIdInfo() {
+
+    const id = props.match.params.id;
+    try {
+      const data = await getMoviesInfo(id);
+
+      if (data.Response === "True") {
+        const refactoredData = {
+          title: data.Title,
+          poster: data.Poster,
+          plot: data.Plot,
+          tables: [
+            {
+              title: 'General information',
+              data: {
+                year: data.Year,
+                language: data.Language,
+                released: data.Released,
+                runtime: data.Runtime,
+                genre: data.Genre
+              }
+            },
+            {
+              title: 'Working team',
+              data: {
+                country: data.Country,
+                director: data.Director,
+                writer: data.Actors,
+              }
+            },
+            {
+              title: 'Other information',
+              data: {
+                rated: data.Rated,
+                awards: data.Awards,
+                metaScore: data.Metascore,
+                boxOffice: data.BoxOffice,
+                production: data.Production,
+                website: data.Website
+              }
+            },
+            {
+              title: 'The Open Movie Database',
+              data: {
+                imdbRating: data.imdbRating,
+                imdbVotes: data.imdbVotes,
+                imdbID: data.imdbID
+              }
+            }
+          ]
+        }
+        const newState = {
+          ...movieInformationState,
+          movieData: refactoredData,
+          loading: false
+        }
+        setMovieInformationState(newState)
+      } else if (data.Response === "False") {
+        throw new Error(data.Error)
       } else {
-        setError(data.Error)
+        throw new Error('Response undefined')
       }
-    })
-  },[])
+
+    } catch (error) {
+      const newState = {
+        ...movieInformationState,
+        error: error.message,
+        loading: false,
+      }
+      setMovieInformationState(newState)
+    }
+  }
 
   const closeModal = () => {
     history.push("/movies")
-    setError("");
+    setMovieInformationState({
+      ...movieInformationState,
+      error: "",
+      loading: true
+    })
   }
 
   return (
       <>
-        {loading && !error
-            ? <Loader />
-            : Object.keys(moviesInfo).length !== 0 && (<div className="bg-dark rounded my-4 pr-3 pl-3">
+        {movieInformationState.loading && !movieInformationState.error
+            ? <Loader/>
+            : Object.keys(movieInformationState.movieData).length !== 0 && (<div className="bg-dark rounded my-4 pr-3 pl-3">
           <div className="row justify-content-end">
             <div className="col-3 col-sm-2 col-lg-1">
               <Link to='/movies'>
@@ -49,130 +119,49 @@ const MovieInformation = (props) => {
             <div className="col-12">
               <h1
                   className={`text-center my-4 text-white ${styles.nowrap}`}
-                  title={moviesInfo.Title}
-              >&#10032; {moviesInfo.Title} &#10032;</h1>
+                  title={movieInformationState.movieData.title}
+              >{movieInformationState.movieData.title}</h1>
             </div>
           </div>
           <div className="row">
             <div className="col-sm-12 col-lg-4">
-              <div className={styles.img_wrapper}>
-                <img className="mb-5" src={moviesInfo.Poster === "N/A" ? defaultPoster : moviesInfo.Poster} alt={moviesInfo.Title}/>
-              </div>
+              <Poster
+                  poster={movieInformationState.movieData.poster}
+                  title={movieInformationState.movieData.title}
+              />
             </div>
             <div className="col-12 col-lg-8">
-              <p className="text-white font-weight-light mb-5">{moviesInfo.Plot === "N/A" ? "No information" : moviesInfo.Plot}</p>
-              <span className="text-white">General information</span>
-              <hr className={`${styles.line} mb-4`}/>
-              <div className="row">
-                <div className="col-12 mb-4">
-                  <table className="table table-borderless table-dark">
-                    <tbody>
-                    <tr>
-                      <th scope="row">Year</th>
-                      <td>{moviesInfo.Year === "N/A" ? "No information" : moviesInfo.Year}</td>
-                    </tr>
-                    <tr>
-                      <th scope="row">Language</th>
-                      <td>{moviesInfo.Language === "None" || moviesInfo.Language === "N/A" ? "No information" : moviesInfo.Language}</td>
-                    </tr>
-                    <tr>
-                      <th scope="row">Released</th>
-                      <td>{moviesInfo.Released === "N/A" ? "No information" : moviesInfo.Released}</td>
-                    </tr>
-                    <tr>
-                      <th scope="row">Runtime</th>
-                      <td>{moviesInfo.Runtime === "N/A" ? "No information" : moviesInfo.Runtime}</td>
-                    </tr>
-                    <tr>
-                      <th scope="row">Genre</th>
-                      <td>{moviesInfo.Genre === "N/A" ? "No information" : moviesInfo.Genre}</td>
-                    </tr>
-                    </tbody>
-                  </table>
-                </div>
-              </div>
+              <p className="text-white font-weight-light mb-5">{movieInformationState.movieData.plot === "N/A" ? "No information" : movieInformationState.movieData.plot}</p>
+              {movieInformationState.movieData.tables.map((table, index) => {
+                if (index === 0) {
+                  return (
+                      <InformationTable
+                          key={index}
+                          tableData={table}
+                      />
+                  )
+                }
+              })
+              }
             </div>
           </div>
           <div className="row">
-            <div className="col-12 col-lg-4 mb-4">
-              <span className="text-white">Working team</span>
-              <hr className={`${styles.line} mb-4`}/>
-              <table className="table table-borderless table-dark">
-                <tbody>
-                <tr>
-                  <th scope="row">Country</th>
-                  <td>{moviesInfo.Country === "N/A" ? "No information" : moviesInfo.Country}</td>
-                </tr>
-                <tr>
-                  <th scope="row">Director</th>
-                  <td>{moviesInfo.Director === "N/A" ? "No information" : moviesInfo.Director}</td>
-                </tr>
-                <tr>
-                  <th scope="row">Writer</th>
-                  <td>{moviesInfo.Writer === "N/A" ? "No information" : moviesInfo.Writer}</td>
-                </tr>
-                <tr>
-                  <th scope="row">Actors</th>
-                  <td>{moviesInfo.Actors === "N/A" ? "No information" : moviesInfo.Actors}</td>
-                </tr>
-                </tbody>
-              </table>
-            </div>
-            <div className="col-12 col-lg-4 mb-4">
-              <span className="text-white">Other information</span>
-              <hr className={`${styles.line} mb-4`}/>
-              <table className="table table-borderless table-dark">
-                <tbody>
-                <tr>
-                  <th scope="row">Rated</th>
-                  <td>{moviesInfo.Rated === "N/A" || moviesInfo.Rated === "R" || moviesInfo.Rated === "Not Rated" ? "No information" : moviesInfo.Rated}</td>
-                </tr>
-                <tr>
-                  <th scope="row">Awards</th>
-                  <td>{moviesInfo.Awards === "N/A" ? "No information" : moviesInfo.Awards}</td>
-                </tr>
-                <tr>
-                  <th scope="row">Metascore</th>
-                  <td>{moviesInfo.Metascore === "N/A" ? "No information" : moviesInfo.Metascore}</td>
-                </tr>
-                <tr>
-                  <th scope="row">Box Office</th>
-                  <td>{moviesInfo.BoxOffice === "N/A" ? "No information" : moviesInfo.BoxOffice}</td>
-                </tr>
-                <tr>
-                  <th scope="row">Production</th>
-                  <td>{moviesInfo.Production === "N/A" ? "No information" : moviesInfo.Production}</td>
-                </tr>
-                <tr>
-                  <th scope="row">Website</th>
-                  <td>{moviesInfo.Website === "N/A" ? "No information" : moviesInfo.Website}</td>
-                </tr>
-                </tbody>
-              </table>
-            </div>
-            <div className="col-12 col-lg-4 mb-4">
-              <span className="text-white">The Open Movie Database</span>
-              <hr className={`${styles.line} mb-4`}/>
-              <table className="table table-borderless table-dark">
-                <tbody>
-                <tr>
-                  <th scope="row">Rating</th>
-                  <td>{moviesInfo.imdbRating === "N/A" ? "No information" : moviesInfo.imdbRating}</td>
-                </tr>
-                <tr>
-                  <th scope="row">Votes</th>
-                  <td>{moviesInfo.imdbVotes === "N/A" ? "No information" : moviesInfo.imdbVotes}</td>
-                </tr>
-                <tr>
-                  <th scope="row">ID</th>
-                  <td>{moviesInfo.imdbID === "N/A" ? "No information" : moviesInfo.imdbID}</td>
-                </tr>
-                </tbody>
-              </table>
-            </div>
+            {movieInformationState.movieData.tables.map((table, index) => {
+              if (index !== 0) {
+                return (
+                    <div className="col-12 col-lg-4 mb-4" key={index}>
+                      <InformationTable
+                          key={index}
+                          tableData={table}
+                      />
+                    </div>
+                )
+              }
+            })
+            }
           </div>
         </div>)}
-        {error && <Modal error={error} closeModal={closeModal} />}
+        {movieInformationState.error && <Modal error={movieInformationState.error} closeModal={closeModal}/>}
       </>
   )
 }

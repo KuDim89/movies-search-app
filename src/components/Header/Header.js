@@ -1,12 +1,13 @@
 import React, {useContext, useState} from "react";
-import logo from "../../assets/movie-logo.jpg";
 import styles from "./Header.module.scss"
 import {useHistory} from "react-router-dom";
 import AppContext from "../../context";
-import NavigationLinks from "./NavigationLinks";
-import Button from "../Button/Button";
+import NavigationLinks from "./NavigationLinks/NavigationLinks";
+import LogoImg from "../LogoImg/LogoImg";
+import ButtonColored from "../ButtonColored/ButtonColored";
+import ButtonBurger from "./ButtonBurger/ButtonBurger";
 
-const Header = (props) => {
+const Header = () => {
   const {appData, setAppData} = useContext(AppContext)
   const [show, setShow] = useState(false)
   const history = useHistory();
@@ -17,8 +18,6 @@ const Header = (props) => {
       active: false,
       loginPage: true
     }
-
-    window.localStorage.removeItem('movies');
     history.push("/")
     setAppData(newAppData);
   }
@@ -33,33 +32,17 @@ const Header = (props) => {
     setAppData(newAppData);
   }
 
-  const handleMovies = () => {
-    history.push("/movies")
-  }
-
-  const handleRevert = () => {
-    const newAppData = {
-      ...appData,
-      active: false,
-      loginPage: true
-    }
-    history.push("/")
-    setAppData(newAppData);
-  }
-
   const isTrigger = () => {
     setShow(!show)
   }
+
   return (
       <header>
         <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
-          <a
-              className={`navbar-brand ${styles.link}`}
-              onClick={appData.active ? handleMovies : handleRevert}
-          >
-            <img className={styles.header_logo} src={logo} alt="logo"/>
-            {props.text}
-          </a>
+            <LogoImg
+                additionalClasses={'navbar-brand'}
+                width={"7"}
+                borderRadius={"10"}/>
           <div className={`collapse navbar-collapse ${show ? "show" : ""}`} id="navbarSupportedContent">
             <NavigationLinks isTrigger={isTrigger}/>
           </div>
@@ -69,30 +52,28 @@ const Header = (props) => {
               : <div className="form-inline my-2 my-lg-0">
                 {appData.active
                     ? <div className={styles.padding_right}>
-                        <Button
-                            type={'transparent'}
-                            onClick={handleLogout}
-                          >
-                          Logout
-                          </Button>
-                      </div>
-                    :<div className={styles.padding_right}>
-                      <Button
-                          type={'transparent'}
+                      <ButtonColored
+                          additionalClasses={"btn-outline-secondary"}
+                          onClick={handleLogout}
+                      >Logout
+                      </ButtonColored>
+                    </div>
+                    : <div className={styles.padding_right}>
+                      <ButtonColored
                           onClick={handleLogin}
-                        >
-                        Login
-                        </Button>
-                      </div>
+                      >Login
+                      </ButtonColored>
+                    </div>
                 }
               </div>
           }
-          <button
-              className={`navbar-toggler ${styles.absolute}`}
-              onClick={isTrigger}
-          >
-            <span className="navbar-toggler-icon"/>
-          </button>
+          <span className={styles.absolute}>
+            <ButtonBurger
+                show={show}
+                setShow={setShow}
+                isTrigger={isTrigger}
+            />
+          </span>
         </nav>
       </header>
   )

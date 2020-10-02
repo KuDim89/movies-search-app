@@ -1,8 +1,7 @@
 import React, {useContext, useEffect, useState} from "react";
 import styles from './Movies.module.scss'
-import Search from "../../components/Search/Search";
+import Search from "./Search/Search";
 import Card from "./Card/Card";
-import {randomWord} from "../../utils/randomWord";
 import {getMoviesArr} from "../../utils/omdbFunctions/getMoviesArr";
 import Loader from "../../components/Loader/Loader";
 import Modal from "../../components/ErrorModal/ErrorModal";
@@ -41,7 +40,7 @@ const defaultMoviesArr = [
 
 const Movies = () => {
   const initialState = {
-    movies: JSON.parse(window.localStorage.getItem("movies")) || [],
+    movies: [],
     loading: true,
     error: ""
   }
@@ -57,21 +56,34 @@ const Movies = () => {
       }
       setAppData(newAppData)
     }
-  }, [])
+    if(movieState.movies.length === 0) {
+      defaultData();
+    }
 
-  useEffect(() => {
-    window.localStorage.setItem("movies", JSON.stringify(movieState.movies));
+  }, []);
 
-    if (movieState.movies.length === 0 && !movieState.error) {
-      getData();
-    } else {
+
+  async function defaultData()  {
+    try {
+      const data = await getMoviesArr("aardvark");
+      if ( data.Response === "True") {
+        setMovieState({
+          ...movieState,
+          movies: data.Search,
+          loading: false
+        })
+      } else {
+        throw new Error(data.Error)
+      }
+    } catch(error) {
       setMovieState({
         ...movieState,
-        movies: movieState.movies,
+        movies: defaultMoviesArr,
+        error: error.message,
         loading: false
       })
     }
-  }, [movieState.movies])
+  }
 
   async function search(string) {
     setMovieState({
@@ -79,51 +91,22 @@ const Movies = () => {
       loading: true
     });
     const searchValue = string.toString().trim()
-    const data = await getMoviesArr(searchValue);
+    try {
+      const data = await getMoviesArr(searchValue);
+
       if (data.Response === "True") {
         setMovieState({
           ...movieState,
           movies: data.Search
         })
       } else {
-        setMovieState({
-          ...movieState,
-          error: data.Error
-        });
+        throw new Error(data.Error)
       }
-  }
-
-  async function getData() {
-    const data = await randomMovieArr(0, 10);
-    data.Response === "True"
-        ? setMovieState({
-          ...movieState,
-          movies: data.Search,
-          loading: false
-        })
-        : setMovieState({
-          ...movieState,
-          movies: defaultMoviesArr,
-          error: data.Error,
-          loading: false
-        })
-  }
-
-  async function randomMovieArr(count, max) {
-    if (count >= max) {
-      return await getMoviesArr("boy")
-    } else {
-      const word = await randomWord();
-      const data = await getMoviesArr(word);
-      if (data.Response === "True" && movieState.loading) {
-        return data
-      } else {
-        if(data.Response === "False" && data.Error === "Movie not found!"){ // <----- ?
-          return await randomMovieArr(count + 1, max);
-        } else {
-          return data;
-        }
-      }
+    } catch (error) {
+      setMovieState({
+        ...movieState,
+        error: error.message
+      });
     }
   }
 
@@ -138,7 +121,10 @@ const Movies = () => {
       <>
         <div className="row w-100">
           <div className="col-12">
-            <Search search={search} error={setMovieState}/>
+            <Search
+                search={search}
+                state = {{movieState, setMovieState}}
+            />
           </div>
         </div>
         <div className={`${styles.cards_wrapper} ${styles.relative}`}>

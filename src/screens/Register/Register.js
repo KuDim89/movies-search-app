@@ -1,15 +1,15 @@
 import React, {useContext, useEffect, useState} from "react";
 import styles from "./Register.module.scss";
-import logo from "../../assets/movie-logo.jpg";
 import {setData} from "../../utils/firebaseFunctions/setData";
 import {useHistory} from "react-router-dom";
 import {createControl} from "../../utils/formFunctions/createFormControl";
-import Button from "../../components/Button/Button";
 import Input from "../../components/Input/Input";
-import Checkbox from "../../components/Checkbox/Checkbox";
+import Checkbox from "./Checkbox/Checkbox";
 import AppContext from "../../context";
 import {validateControl} from "../../utils/formFunctions/validateControl";
 import {validateForm} from "../../utils/formFunctions/validateForm";
+import ButtonMain from "../../components/ButtonMain/ButtonMain";
+import LogoImg from "../../components/LogoImg/LogoImg";
 
 
 const Register = (props) => {
@@ -97,7 +97,7 @@ const Register = (props) => {
 
   const onChangeHandler = (event, formControlName) => {
     const registerFormControls = {...registerFormState.formControls};
-    const registerControl = {...registerFormControls[formControlName]};
+    const registerControl = registerFormControls[formControlName];
 
     registerControl.value = event;
     registerControl.touched = true;
@@ -134,7 +134,10 @@ const Register = (props) => {
             <div className="row justify-content-center my-auto">
               <div className="col-12">
                 <div className="row justify-content-center px-3 mb-3">
-                  <img id="logo" src={logo} alt="logo"/>
+                  <LogoImg
+                      width={15}
+                      borderRadius={30}
+                  />
                 </div>
                 <h3 className="mb-5 text-center">{props.siteData.name}</h3>
 
@@ -191,14 +194,13 @@ const Register = (props) => {
                       checked={registerFormState.formControls.policy.checked}
                       onChange={e => onChangeHandler(e.target.checked, 'policy')}
                   />
-                  <Button
-                      type="secondary-block"
-                      classes="py-2 my-4"
+                  <ButtonMain
+                      additionalClasses="btn-block py-2 my-4"
                       onClick={handleSubmit}
                       disabled={!registerFormState.isFormValid}
                   >
                     Create Account
-                  </Button>
+                  </ButtonMain>
                 </form>
               </div>
             </div>

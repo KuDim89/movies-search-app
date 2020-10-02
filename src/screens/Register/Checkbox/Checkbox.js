@@ -9,9 +9,9 @@ const Checkbox = (props) => {
   switch (props.label) {
     case 'policy':
       label = <>Creating an account means you’re okay with our
-          <a href="#" className="text-muted"><b> Terms of Service</b></a>,
-          <a href="#" className="text-muted"><b> Privacy Policy</b></a>, and our default
-          <a href="#" className="text-muted"><b> Notification Settings</b></a>.</>
+          <a className="text-muted"><b> Terms of Service</b></a>,
+          <a className="text-muted"><b> Privacy Policy</b></a>, and our default
+          <a className="text-muted"><b> Notification Settings</b></a>.</>
       break;
     default:
       label = props.label || ''
