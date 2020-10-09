@@ -1,33 +1,30 @@
-import React, {useContext, useEffect, useState} from "react";
+import React, {useEffect, useState} from "react";
 import styles from "./Login.module.scss"
 import {Link, useHistory} from "react-router-dom";
-import AppContext from "../../context";
+import {connect} from "react-redux";
 import {validateControl} from "../../utils/formFunctions/validateControl";
 import {createControl} from "../../utils/formFunctions/createFormControl";
 import {validateForm} from "../../utils/formFunctions/validateForm";
 import ButtonMain from "../../components/ButtonMain/ButtonMain";
 import LogoImg from "../../components/LogoImg/LogoImg";
 import CustomForm from "../../components/CustomForm/CustomForm";
+import {hideLoader, login, showLoader, showLoginPage} from "../../redux/actions";
 
-const Login = (props) => {
+const Login = ({isAuthentication, isLogin, users, loginPageData, showLoginPage, hideLoader, login}) => {
   const initialState = {
     isFormValid: false,
     formControls: createFormControls()
   }
 
-  const {appData, setAppData} = useContext(AppContext)
   const [loginState, setLoginState] = useState(initialState);
   const history = useHistory();
 
   useEffect(() => {
-    appData.active && history.push("/movies")
-    if (appData.loginPage === false) {
-      const newAppData = {
-        ...appData,
-        loginPage: true
-      }
-      setAppData(newAppData)
+    isAuthentication && history.push("/movies")
+    if (isLogin === false) {
+      showLoginPage()
     }
+    hideLoader()
   }, [])
 
   function createFormControls() {
@@ -73,18 +70,14 @@ const Login = (props) => {
 
   const checkUser = (event) => {
     event.preventDefault()
-    const users = [...props.users];
+    const allUsers = [...users];
     const phone = loginState.formControls.phone.value;
     const password = loginState.formControls.password.value;
-    const credentials = users.find(user => user.phone === phone && user.password === password)
+    const credentials = allUsers.find(user => user.phone === phone && user.password === password)
 
     if (credentials) {
-      const newAppData = {
-        ...appData,
-        active: true,
-      }
       history.push("/movies")
-      setAppData(newAppData)
+      login()
     } else {
       const LoginStateClone = {...loginState}
       const controls = {...LoginStateClone.formControls}
@@ -119,7 +112,7 @@ const Login = (props) => {
                       borderRadius={30}
                   />
                 </div>
-                <h3 className="mb-5 text-center">{props.siteData.name}</h3>
+                <h3 className="mb-5 text-center">{loginPageData.name}</h3>
                 <h6>Please login to your account</h6>
                 <CustomForm
                     pageState={loginState}
@@ -145,7 +138,7 @@ const Login = (props) => {
           </div>
           <div className={`card ${styles.card_right}`}>
             <div className="my-auto mx-md-5 px-md-5 right">
-              <h3>{props.siteData.title}</h3> <small>{props.siteData.text}</small>
+              <h3>{loginPageData.title}</h3> <small>{loginPageData.text}</small>
             </div>
           </div>
         </div>
@@ -153,4 +146,20 @@ const Login = (props) => {
   )
 }
 
-export default Login;
+const mapStateToProps = state => {
+  return {
+    isAuthentication: state.isAuthentication,
+    isLogin: state.isLogin,
+    users: state.app.users,
+    loginPageData: state.app.loginData
+  }
+}
+
+const mapDispatchToProps = {
+  showLoginPage,
+  showLoader,
+  hideLoader,
+  login
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Login);
