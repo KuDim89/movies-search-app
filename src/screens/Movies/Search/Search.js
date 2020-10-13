@@ -1,58 +1,10 @@
 import React, {useState} from "react";
 import styles from "./Search.module.scss"
 import ButtonColored from "../../../components/ButtonColored/ButtonColored";
-import {getMoviesArr} from "../../../utils/omdbFunctions/getMoviesArr";
-import {randomWord} from "../../../utils/randomWord";
 
 const Search = (props) => {
+
   const [searchValue, setSearchValue] = useState('');
-
-  async function callRandomData(e) {
-    e.preventDefault();
-    props.state.setMovieState({
-      ...props.state.movieState,
-      loading: true
-    })
-    try {
-      const data = await randomMovieArr(0, 10);
-      if (data.Response === "True") {
-        props.state.setMovieState({
-          ...props.state.movieState,
-          movies: data.Search,
-          loading: false
-        })
-      } else {
-        throw new Error(data.Error)
-      }
-    } catch (error) {
-      props.state.setMovieState({
-        ...props.state.movieState,
-        error: error.message,
-        loading: false
-      })
-    }
-  }
-
-  async function randomMovieArr(count, max) {
-    if (count >= max) {
-      return await getMoviesArr("boy")
-    } else {
-      try {
-        const word = await randomWord();
-        const data = await getMoviesArr(word);
-
-        if (data.Response === "True") {
-          return data
-        } else if (data.Response === "False" && data.Error === "Movie not found!") {
-            return await randomMovieArr(count + 1, max);
-        } else {
-            throw new Error(data.Error);
-          }
-      } catch (error) {
-        throw error;
-      }
-    }
-  }
 
   const resetInput = () => {
     setSearchValue('');
@@ -61,7 +13,7 @@ const Search = (props) => {
   const callSearchFunction = (e) => {
     if(searchValue){
       e.preventDefault();
-      props.search(searchValue);
+      props.onSearchClick(searchValue);
       resetInput();
     }
   }
@@ -91,12 +43,14 @@ const Search = (props) => {
         <ButtonColored
             additionalClasses={"btn-dark my-2"}
             type="submit"
-            onClick={e => {callRandomData(e)}}
+            onClick={props.onRandomClick}
         >
           Random
         </ButtonColored>
       </form>
   )
 }
+
+
 
 export default Search;

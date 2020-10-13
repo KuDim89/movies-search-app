@@ -1,10 +1,13 @@
-import React, {useContext} from 'react';
+import React from 'react';
 import styles from './LogoImg.module.scss'
 import logo from "./assets/movie-logo.jpg";
 import {useHistory} from "react-router-dom";
-import AppContext from "../../context";
+import {connect} from "react-redux";
+import {logout, showLoginPage} from "../../redux/actions";
 
-const LogoImg = (props) => {
+
+const LogoImg = ({isAuthentication, logout, showLoginPage, ...props}) => {
+
   const classes = [props.additionalClasses, styles.link].filter(el => {
     return el != null;
   });
@@ -14,7 +17,6 @@ const LogoImg = (props) => {
     borderRadius: `${props.borderRadius}px`
   }
 
-  const {appData, setAppData} = useContext(AppContext)
   const history = useHistory();
 
   const handleMovies = () => {
@@ -22,23 +24,28 @@ const LogoImg = (props) => {
   }
 
   const handleRevert = () => {
-    const newAppData = {
-      ...appData,
-      active: false,
-      loginPage: true
-    }
     history.push("/")
-    setAppData(newAppData);
   }
 
   return (
       <span
           className={classes.join(' ')}
-          onClick={appData.active ? handleMovies : handleRevert}
+          onClick={isAuthentication ? handleMovies : handleRevert}
       >
       <img className={styles.border} style={css} src={logo} alt="logo"/>
       </span>
   );
 };
 
-export default LogoImg;
+const mapStateToProps = state => {
+  return {
+    isAuthentication: state.isAuthentication
+  }
+}
+
+const mapDispatchToProps = {
+  logout,
+  showLoginPage
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(LogoImg);

@@ -51,7 +51,7 @@ const Modal = (props) => {
                 </div>
                 <button
                     type="button"
-                    className="close"
+                    className={`close ${styles.outline}`}
                     onClick={props.closeModal}
                 >
                   <span aria-hidden="true">&times;</span>
