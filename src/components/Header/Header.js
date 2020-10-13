@@ -6,15 +6,17 @@ import LogoImg from "../LogoImg/LogoImg";
 import ButtonColored from "../ButtonColored/ButtonColored";
 import ButtonBurger from "./ButtonBurger/ButtonBurger";
 import {connect} from "react-redux";
-import {logout, showLoginPage} from "../../redux/actions";
+import {logout, removeMovies, showLoginPage} from "../../redux/actions";
 
-const Header = ({isAuthentication, isLogin, logout, showLoginPage}) => {
+const Header = ({isAuthentication, isLogin, logout, showLoginPage, removeMovies}) => {
+
   const [burgerState, setBurgerState] = useState(false)
   const history = useHistory();
 
   const handleLogout = () => {
     logout();
     showLoginPage();
+    removeMovies();
     history.push("/")
   }
 
@@ -52,6 +54,7 @@ const Header = ({isAuthentication, isLogin, logout, showLoginPage}) => {
                     </div>
                     : <div className={styles.padding_right}>
                       <ButtonColored
+                          additionalClasses={"btn-outline-secondary"}
                           onClick={handleLogin}
                       >Login
                       </ButtonColored>
@@ -78,7 +81,8 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = {
   logout,
-  showLoginPage
+  showLoginPage,
+  removeMovies
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Header);

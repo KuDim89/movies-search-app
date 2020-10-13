@@ -8,10 +8,12 @@ import {validateForm} from "../../utils/formFunctions/validateForm";
 import ButtonMain from "../../components/ButtonMain/ButtonMain";
 import LogoImg from "../../components/LogoImg/LogoImg";
 import CustomForm from "../../components/CustomForm/CustomForm";
-import {hideLoader, login, showLoader, showLoginPage} from "../../redux/actions";
+import {login, showLoginPage} from "../../redux/actions";
 
-const Login = ({isAuthentication, isLogin, users, loginPageData, showLoginPage, hideLoader, login}) => {
+const Login = ({isAuthentication, isLogin, users, loginPageData, login, showLoginPage}) => {
   const initialState = {
+    loader: true,
+    error: null,
     isFormValid: false,
     formControls: createFormControls()
   }
@@ -24,8 +26,12 @@ const Login = ({isAuthentication, isLogin, users, loginPageData, showLoginPage, 
     if (isLogin === false) {
       showLoginPage()
     }
-    hideLoader()
+    setLoginState({
+      ...loginState,
+      loader: false
+    })
   }, [])
+
 
   function createFormControls() {
     return {
@@ -96,53 +102,51 @@ const Login = ({isAuthentication, isLogin, users, loginPageData, showLoginPage, 
     }
   }
 
-  const toRegister = () => {
-    history.push("/register")
-  }
-
   return (
       <div className="container px-4 py-5 mx-auto">
-        <div className="d-flex flex-lg-row">
-          <div className={styles.card_left}>
-            <div className="row justify-content-center my-auto">
-              <div className="col-md-8 col-10 my-5">
-                <div className="row justify-content-center px-3 mb-3">
-                  <LogoImg
-                      width={17}
-                      borderRadius={30}
-                  />
+            <div className="d-flex flex-lg-row">
+              <div className={styles.card_left}>
+                <div className="row justify-content-center my-auto">
+                  <div className="col-md-8 col-10 my-5">
+                    <div className="row justify-content-center px-3 mb-3">
+                      <LogoImg
+                          width={17}
+                          borderRadius={30}
+                      />
+                    </div>
+                    <h3 className="mb-5 text-center">{loginPageData.name}</h3>
+                    <h6>Please login to your account</h6>
+                    <CustomForm
+                        pageState={loginState}
+                        formFunction={{onClick: checkUser, onChangeHandler}}
+                        buttonName={'Login to JustWatch'}
+                    />
+                    <div className="row justify-content-center my-2">
+                      <Link to='/forgotPass'>
+                        <small className="text-muted">Forgot Password?</small>
+                      </Link>
+                    </div>
+                    <div className="row bottom text-center">
+                      <p className="sm-text mx-auto m-3">Don't have an account?
+                        <Link to={'/register'}>
+                          <ButtonMain
+                              additionalClasses={"ml-2 py-2 px-3"}
+                          >
+                            Create new</ButtonMain>
+                        </Link>
+                      </p>
+                    </div>
+                  </div>
                 </div>
-                <h3 className="mb-5 text-center">{loginPageData.name}</h3>
-                <h6>Please login to your account</h6>
-                <CustomForm
-                    pageState={loginState}
-                    formFunction={{onClick: checkUser, onChangeHandler}}
-                    buttonName={'Login to JustWatch'}
-                />
-                <div className="row justify-content-center my-2">
-                  <Link to='/forgotPass'>
-                    <small className="text-muted">Forgot Password?</small>
-                  </Link>
-                </div>
-                <div className="row bottom text-center">
-                  <p className="sm-text mx-auto m-3">Don't have an account?
-                    <ButtonMain
-                        additionalClasses={"ml-2 py-2 px-3"}
-                        onClick={toRegister}
-                    >
-                      Create new</ButtonMain>
-                  </p>
+              </div>
+              <div className={`card ${styles.card_right}`}>
+                <div className="my-auto mx-md-5 px-md-5 right">
+                  <h3>{loginPageData.title}</h3> <small>{loginPageData.text}</small>
                 </div>
               </div>
             </div>
           </div>
-          <div className={`card ${styles.card_right}`}>
-            <div className="my-auto mx-md-5 px-md-5 right">
-              <h3>{loginPageData.title}</h3> <small>{loginPageData.text}</small>
-            </div>
-          </div>
-        </div>
-      </div>
+
   )
 }
 
@@ -157,8 +161,6 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = {
   showLoginPage,
-  showLoader,
-  hideLoader,
   login
 }
 

@@ -3,7 +3,7 @@ import {NavLink} from "react-router-dom";
 import {connect} from "react-redux";
 
 
-const NavigationLinks = (props, {isAuthentication}) => {
+const NavigationLinks = ({isAuthentication, ...props}) => {
 
   const links = [
     {to: '/movies', label: 'Movies', exact: true},
@@ -31,7 +31,7 @@ const NavigationLinks = (props, {isAuthentication}) => {
 };
 const mapStateToProps = state => {
   return {
-    isAuthentication: state.isAuthentication.active,
+    isAuthentication: state.isAuthentication
   }
 }
 export default connect(mapStateToProps, null)(NavigationLinks);

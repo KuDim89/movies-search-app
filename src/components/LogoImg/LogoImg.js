@@ -6,7 +6,8 @@ import {connect} from "react-redux";
 import {logout, showLoginPage} from "../../redux/actions";
 
 
-const LogoImg = ( props, {isAuthentication, logout, showLoginPage}) => {
+const LogoImg = ({isAuthentication, logout, showLoginPage, ...props}) => {
+
   const classes = [props.additionalClasses, styles.link].filter(el => {
     return el != null;
   });
@@ -24,8 +25,6 @@ const LogoImg = ( props, {isAuthentication, logout, showLoginPage}) => {
 
   const handleRevert = () => {
     history.push("/")
-    logout()
-    showLoginPage()
   }
 
   return (
@@ -40,7 +39,7 @@ const LogoImg = ( props, {isAuthentication, logout, showLoginPage}) => {
 
 const mapStateToProps = state => {
   return {
-    isAuthentication: state.isAuthentication.active,
+    isAuthentication: state.isAuthentication
   }
 }
 

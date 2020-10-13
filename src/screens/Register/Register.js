@@ -1,36 +1,34 @@
-import React, {useContext, useEffect, useState} from "react";
+import React, {useEffect, useState} from "react";
 import styles from "./Register.module.scss";
 import {setData} from "../../utils/firebaseFunctions/setData";
 import {useHistory} from "react-router-dom";
 import {createControl} from "../../utils/formFunctions/createFormControl";
 import Input from "../../components/Input/Input";
 import Checkbox from "./Checkbox/Checkbox";
-import AppContext from "../../context";
 import {validateControl} from "../../utils/formFunctions/validateControl";
 import {validateForm} from "../../utils/formFunctions/validateForm";
 import ButtonMain from "../../components/ButtonMain/ButtonMain";
 import LogoImg from "../../components/LogoImg/LogoImg";
+import {hideLoginPage} from "../../redux/actions";
+import {connect} from "react-redux";
 
 
-const Register = (props) => {
+const Register = ({isAuthentication, loginData, isLogin, hideLoginPage }) => {
   const initialState = {
     isFormValid: false,
     formControls: createFormControls()
   }
 
-  const {appData, setAppData} = useContext(AppContext)
   const [registerFormState, setRegisterFormState] = useState(initialState);
   const history = useHistory();
 
   useEffect(() => {
-    appData.active && history.push("/movies")
-    if (appData.loginPage === true) {
-      const newAppData = {
-        ...appData,
-        loginPage: false
-      }
-      setAppData(newAppData)
+
+    isAuthentication && history.push("/movies")
+    if(isLogin === true) {
+      hideLoginPage()
     }
+
   })
 
   function createFormControls() {
@@ -139,7 +137,7 @@ const Register = (props) => {
                       borderRadius={30}
                   />
                 </div>
-                <h3 className="mb-5 text-center">{props.siteData.name}</h3>
+                <h3 className="mb-5 text-center">{loginData.name}</h3>
 
                 <form>
                   <div className="row">
@@ -210,4 +208,17 @@ const Register = (props) => {
   )
 }
 
-export default Register;
+const mapStateToProps = state => {
+  return {
+    isAuthentication: state.isAuthentication,
+    isLogin: state.isLogin,
+    loginData: state.app.loginData
+  }
+}
+
+const mapDispatchToProps = {
+  hideLoginPage
+}
+
+
+export default connect(mapStateToProps, mapDispatchToProps)(Register);
