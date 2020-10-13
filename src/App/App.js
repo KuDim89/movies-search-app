@@ -1,116 +1,93 @@
 import React, {useEffect, useState} from 'react';
 import {Switch, Route, BrowserRouter, Redirect} from "react-router-dom";
+import {connect} from "react-redux";
 import styles from './App.module.scss';
 import Header from "../components/Header/Header";
 import Footer from "../components/Footer/Footer";
 import Login from "../screens/Login/Login";
 import Register from "../screens/Register/Register";
 import Movies from "../screens/Movies/Movies";
-import ForgotPass from "../screens/ForgotPassword/ForgotPassword";
-import {AppProvider} from "../context";
 import MovieInformation from "../screens/MovieInformation/MovieInformation";
-import {getDataCollection} from "../utils/firebaseFunctions/getDataCollection";
-import {findId} from "../utils/findId";
 import Loader from "../components/Loader/Loader";
 import NotFound from "../screens/NotFound/NotFound";
 import Info from "../screens/Info/Info";
+import {getFirebaseData} from "../redux/actions";
+import ForgotPassword from "../screens/ForgotPassword/ForgotPassword";
 import ErrorModal from "../components/ErrorModal/ErrorModal";
 
-export default function App() {
-  const initialAppData = {
-    active: false, // false
-    loginPage: true,  // true
-  };
+const App = ({isAuthentication, app, getFirebaseData}) => {
 
-  const initialAppState = {
-    loginData: '',
-    forgotPassData: '',
-    otherInfoData: '',
-    users: '',
-    loading: true,
+  const initialState = {
+    loader: true,
     error: null
   }
 
-  const [appData, setAppData] = useState(initialAppData);
-  const [appState, setAppState] = useState(initialAppState);
+  const [appState, setAppState] = useState(initialState);
 
   useEffect(() => {
-    getAllData();
-  }, [appData.active])
+    getAllAppData()
+  }, [isAuthentication])
 
-
-  async function getAllData() {
+  async function getAllAppData() {
     try {
-      const siteData = await getDataCollection("siteData");
-      const userData = await getDataCollection("users");
-
-      const newState = {
-        ...appState,
-        loginData: findId(siteData, 'login'),
-        forgotPassData: findId(siteData, 'forgotPass'),
-        otherInfoData: findId(siteData, 'otherInfo'),
-        users: userData,
-        loading: false
-      }
-      setAppState(newState)
-
+      await getFirebaseData();
+      setAppState({...appState, loader: false})
     } catch (error) {
-      const newState = {
-        ...appState,
-        error: error.message,
-        loading: false
-      }
-      setAppState(newState)
+      setAppState({...appState, loader: false, error: error.message})
     }
   }
 
   const closeModal = () => {
-    getAllData();
-    setAppState({
-      ...appState,
-      loading: true,
-      error: null
-    })
+    setAppState({loader: true, error: null})
+    getAllAppData()
   }
 
   return (
-      <>
-        {appState.error
-            ? <ErrorModal error={appState.error} closeModal={closeModal}/>
-            : <AppProvider value={{appData, setAppData}}>
-              <BrowserRouter>
-                <div className={styles.App}>
-                  <Header/>
-                  <div className="container">
-                    <Switch>
-                      <Route exact path='/'>
-                        {appState.loading ? <Loader/> : <Login siteData={appState.loginData} users={appState.users}/>}
-                      </Route>
-                      <Route exact path='/register'>
-                        {appState.loading ? <Loader/> : <Register siteData={appState.loginData}/>}
-                      </Route>
-                      <Route exact path='/forgotPass'>
-                        {appState.loading ? <Loader/> :
-                            <ForgotPass siteData={appState.forgotPassData} users={appState.users}/>}
-                      </Route>
-                      <Route exact path="/movies">
-                        {appData.active ? <Movies/> : <Redirect to="/"/>}
-                      </Route>
-                      <Route exact path="/movies/:id">
-                        {appData.active ? <MovieInformation/> : <Redirect to="/"/>}
-                      </Route>
-                      <Route exact path="/info">
-                        {appData.active ? <Info/> : <Redirect to="/"/>}
-                      </Route>
-                      <Route component={NotFound}/>
-                    </Switch>
-                  </div>
-                  <Footer siteData={appState.otherInfoData}/>
-                </div>
-              </BrowserRouter>
-            </AppProvider>
-        }
+      appState.error
+      ? <ErrorModal error={appState.error} closeModal={closeModal}/>
+      : <>
+        <BrowserRouter>
+          <div className={styles.App}>
+            <Header/>
+            <div className="container">
+              <Switch>
+                <Route exact path='/'>
+                  {appState.loader ? <Loader/> : <Login/>}
+                </Route>
+                <Route exact path='/register'>
+                  {appState.loader ? <Loader/> : <Register/>}
+                </Route>
+                <Route exact path='/forgotPass'>
+                  {appState.loader ? <Loader/> : <ForgotPassword/>}
+                </Route>
+                <Route exact path="/movies">
+                  {isAuthentication ? <Movies/> : <Redirect to="/"/>}
+                </Route>
+                <Route exact path="/movies/:id">
+                  {isAuthentication ? <MovieInformation/> : <Redirect to="/"/>}
+                </Route>
+                <Route exact path="/info">
+                  {isAuthentication ? <Info/> : <Redirect to="/"/>}
+                </Route>
+                <Route component={NotFound}/>
+              </Switch>
+            </div>
+            <Footer siteData={app.otherInfoData}/>
+          </div>
+        </BrowserRouter>
       </>
   );
 }
 
+const mapStateToProps = state => {
+  return {
+    isAuthentication: state.isAuthentication,
+    app: state.app,
+  }
+}
+
+const mapDispatchToProps = {
+  getFirebaseData
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(App)

@@ -1,9 +1,10 @@
-import React, {useContext} from 'react';
+import React from 'react';
 import {NavLink} from "react-router-dom";
-import AppContext from "../../../context";
+import {connect} from "react-redux";
 
-const NavigationLinks = (props) => {
-  const context = useContext(AppContext)
+
+const NavigationLinks = ({isAuthentication, ...props}) => {
+
   const links = [
     {to: '/movies', label: 'Movies', exact: true},
     {to: '/info', label: 'Info', exact: false},
@@ -17,7 +18,7 @@ const NavigationLinks = (props) => {
           return  (
               <li key={index} className="nav-item my-3">
                 <NavLink
-                    className={`nav-link ${context.appData.active ? "" : "disabled"}`}
+                    className={`nav-link ${isAuthentication ? "" : "disabled"}`}
                     to={link.to}
                     exact={link.exact}
                     onClick={props.isTrigger}
@@ -28,5 +29,9 @@ const NavigationLinks = (props) => {
       </ul>
   );
 };
-
-export default NavigationLinks;
+const mapStateToProps = state => {
+  return {
+    isAuthentication: state.isAuthentication
+  }
+}
+export default connect(mapStateToProps, null)(NavigationLinks);

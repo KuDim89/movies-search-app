@@ -1,39 +1,33 @@
-import React, {useContext, useState} from "react";
+import React, {useState} from "react";
 import styles from "./Header.module.scss"
 import {useHistory} from "react-router-dom";
-import AppContext from "../../context";
 import NavigationLinks from "./NavigationLinks/NavigationLinks";
 import LogoImg from "../LogoImg/LogoImg";
 import ButtonColored from "../ButtonColored/ButtonColored";
 import ButtonBurger from "./ButtonBurger/ButtonBurger";
+import {connect} from "react-redux";
+import {logout, removeMovies, showLoginPage} from "../../redux/actions";
 
-const Header = () => {
-  const {appData, setAppData} = useContext(AppContext)
-  const [show, setShow] = useState(false)
+const Header = ({isAuthentication, isLogin, logout, showLoginPage, removeMovies}) => {
+
+  const [burgerState, setBurgerState] = useState(false)
   const history = useHistory();
 
   const handleLogout = () => {
-    const newAppData = {
-      ...appData,
-      active: false,
-      loginPage: true
-    }
+    logout();
+    showLoginPage();
+    removeMovies();
     history.push("/")
-    setAppData(newAppData);
   }
 
   const handleLogin = () => {
-    const newAppData = {
-      ...appData,
-      active: false,
-      loginPage: true
-    }
+    logout();
+    showLoginPage();
     history.push("/")
-    setAppData(newAppData);
   }
 
   const isTrigger = () => {
-    setShow(!show)
+    setBurgerState(!burgerState)
   }
 
   return (
@@ -43,14 +37,14 @@ const Header = () => {
                 additionalClasses={'navbar-brand'}
                 width={"7"}
                 borderRadius={"10"}/>
-          <div className={`collapse navbar-collapse ${show ? "show" : ""}`} id="navbarSupportedContent">
+          <div className={`collapse navbar-collapse ${burgerState ? "show" : ""}`} id="navbarSupportedContent">
             <NavigationLinks isTrigger={isTrigger}/>
           </div>
 
-          {appData.loginPage
+          {isLogin
               ? null
               : <div className="form-inline my-2 my-lg-0">
-                {appData.active
+                {isAuthentication
                     ? <div className={styles.padding_right}>
                       <ButtonColored
                           additionalClasses={"btn-outline-secondary"}
@@ -60,6 +54,7 @@ const Header = () => {
                     </div>
                     : <div className={styles.padding_right}>
                       <ButtonColored
+                          additionalClasses={"btn-outline-secondary"}
                           onClick={handleLogin}
                       >Login
                       </ButtonColored>
@@ -69,8 +64,6 @@ const Header = () => {
           }
           <span className={styles.absolute}>
             <ButtonBurger
-                show={show}
-                setShow={setShow}
                 isTrigger={isTrigger}
             />
           </span>
@@ -79,4 +72,17 @@ const Header = () => {
   )
 }
 
-export default Header;
+const mapStateToProps = state => {
+  return {
+    isAuthentication: state.isAuthentication,
+    isLogin: state.isLogin
+  }
+}
+
+const mapDispatchToProps = {
+  logout,
+  showLoginPage,
+  removeMovies
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Header);
