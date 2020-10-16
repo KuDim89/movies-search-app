@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {Switch, Route, BrowserRouter, Redirect} from "react-router-dom";
-import {connect} from "react-redux";
+import {useSelector, useDispatch} from "react-redux";
 import styles from './App.module.scss';
 import Header from "../components/Header/Header";
 import Footer from "../components/Footer/Footer";
@@ -15,36 +15,40 @@ import {getFirebaseData} from "../redux/actions";
 import ForgotPassword from "../screens/ForgotPassword/ForgotPassword";
 import ErrorModal from "../components/ErrorModal/ErrorModal";
 
-const App = ({isAuthentication, app, getFirebaseData}) => {
 
-  const initialState = {
-    loader: true,
-    error: null
-  }
+export default function App () {
 
-  const [appState, setAppState] = useState(initialState);
+  const isAuthentication = useSelector(state => state.isAuthentication)
+  const app = useSelector(state => state.app)
+
+  const dispatch = useDispatch()
+
+  const [isLoading, setLoading] = useState(false);
+  const [isError, setError] = useState(null);
 
   useEffect(() => {
     getAllAppData()
   }, [isAuthentication])
 
   async function getAllAppData() {
+    setLoading(true)
     try {
-      await getFirebaseData();
-      setAppState({...appState, loader: false})
+      await dispatch(getFirebaseData());
     } catch (error) {
-      setAppState({...appState, loader: false, error: error.message})
+      setError(error.message)
     }
+    setLoading(false)
   }
 
   const closeModal = () => {
-    setAppState({loader: true, error: null})
+    setLoading(true)
+    setError(null)
     getAllAppData()
   }
 
   return (
-      appState.error
-      ? <ErrorModal error={appState.error} closeModal={closeModal}/>
+      isError
+      ? <ErrorModal error={isError} closeModal={closeModal}/>
       : <>
         <BrowserRouter>
           <div className={styles.App}>
@@ -52,13 +56,13 @@ const App = ({isAuthentication, app, getFirebaseData}) => {
             <div className="container">
               <Switch>
                 <Route exact path='/'>
-                  {appState.loader ? <Loader/> : <Login/>}
+                  {isLoading ? <Loader/> : <Login/>}
                 </Route>
                 <Route exact path='/register'>
-                  {appState.loader ? <Loader/> : <Register/>}
+                  {isLoading ? <Loader/> : <Register/>}
                 </Route>
                 <Route exact path='/forgotPass'>
-                  {appState.loader ? <Loader/> : <ForgotPassword/>}
+                  {isLoading ? <Loader/> : <ForgotPassword/>}
                 </Route>
                 <Route exact path="/movies">
                   {isAuthentication ? <Movies/> : <Redirect to="/"/>}
@@ -78,16 +82,3 @@ const App = ({isAuthentication, app, getFirebaseData}) => {
       </>
   );
 }
-
-const mapStateToProps = state => {
-  return {
-    isAuthentication: state.isAuthentication,
-    app: state.app,
-  }
-}
-
-const mapDispatchToProps = {
-  getFirebaseData
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(App)

@@ -1,16 +1,14 @@
 import React from 'react';
 import styles from './ButtonBurger.module.scss'
 
-const ButtonBurger = (props) => {
+export default function ButtonBurger({isTrigger}) {
 
   return (
       <button
           className={`navbar-toggler ${styles.button_burger}`}
-          onClick={props.isTrigger}
+          onClick={isTrigger}
       >
         <span className="navbar-toggler-icon"/>
       </button>
   );
 };
-
-export default ButtonBurger;

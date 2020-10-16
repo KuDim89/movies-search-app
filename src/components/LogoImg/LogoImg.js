@@ -1,20 +1,21 @@
 import React from 'react';
+import {useHistory} from "react-router-dom";
+import {useSelector} from "react-redux";
 import styles from './LogoImg.module.scss'
 import logo from "./assets/movie-logo.jpg";
-import {useHistory} from "react-router-dom";
-import {connect} from "react-redux";
-import {logout, showLoginPage} from "../../redux/actions";
 
 
-const LogoImg = ({isAuthentication, logout, showLoginPage, ...props}) => {
+export default function LogoImg ({additionalClasses, width, borderRadius}) {
 
-  const classes = [props.additionalClasses, styles.link].filter(el => {
+  const isAuthentication = useSelector(state => state.isAuthentication)
+
+  const classes = [additionalClasses, styles.link].filter(el => {
     return el != null;
   });
 
   const css = {
-    width: `${props.width}rem`,
-    borderRadius: `${props.borderRadius}px`
+    width: `${width}rem`,
+    borderRadius: `${borderRadius}px`
   }
 
   const history = useHistory();
@@ -36,16 +37,3 @@ const LogoImg = ({isAuthentication, logout, showLoginPage, ...props}) => {
       </span>
   );
 };
-
-const mapStateToProps = state => {
-  return {
-    isAuthentication: state.isAuthentication
-  }
-}
-
-const mapDispatchToProps = {
-  logout,
-  showLoginPage
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(LogoImg);

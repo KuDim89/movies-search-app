@@ -1,28 +1,33 @@
 import React, {useState} from "react";
 import styles from "./Header.module.scss"
 import {useHistory} from "react-router-dom";
+import {useSelector, useDispatch} from "react-redux";
 import NavigationLinks from "./NavigationLinks/NavigationLinks";
 import LogoImg from "../LogoImg/LogoImg";
 import ButtonColored from "../ButtonColored/ButtonColored";
 import ButtonBurger from "./ButtonBurger/ButtonBurger";
-import {connect} from "react-redux";
 import {logout, removeMovies, showLoginPage} from "../../redux/actions";
 
-const Header = ({isAuthentication, isLogin, logout, showLoginPage, removeMovies}) => {
+export default function Header () {
+
+  const isAuthentication = useSelector(state => state.isAuthentication)
+  const isLogin = useSelector(state => state.isLogin)
+
+  const dispatch = useDispatch();
 
   const [burgerState, setBurgerState] = useState(false)
   const history = useHistory();
 
   const handleLogout = () => {
-    logout();
-    showLoginPage();
-    removeMovies();
+    dispatch(logout());
+    dispatch(showLoginPage());
+    dispatch(removeMovies());
     history.push("/")
   }
 
   const handleLogin = () => {
-    logout();
-    showLoginPage();
+    dispatch(logout());
+    dispatch(showLoginPage());
     history.push("/")
   }
 
@@ -71,18 +76,3 @@ const Header = ({isAuthentication, isLogin, logout, showLoginPage, removeMovies}
       </header>
   )
 }
-
-const mapStateToProps = state => {
-  return {
-    isAuthentication: state.isAuthentication,
-    isLogin: state.isLogin
-  }
-}
-
-const mapDispatchToProps = {
-  logout,
-  showLoginPage,
-  removeMovies
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(Header);

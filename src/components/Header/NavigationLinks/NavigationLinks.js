@@ -1,13 +1,15 @@
 import React from 'react';
 import {NavLink} from "react-router-dom";
-import {connect} from "react-redux";
+import {useSelector} from "react-redux";
 
 
-const NavigationLinks = ({isAuthentication, ...props}) => {
+export default function NavigationLinks ({isTrigger}) {
+
+  const isAuthentication = useSelector(state => state.isAuthentication)
 
   const links = [
     {to: '/movies', label: 'Movies', exact: true},
-    {to: '/info', label: 'Info', exact: false},
+    {to: '/info', label: 'Info', exact: false}
   ]
 
   return (
@@ -21,7 +23,7 @@ const NavigationLinks = ({isAuthentication, ...props}) => {
                     className={`nav-link ${isAuthentication ? "" : "disabled"}`}
                     to={link.to}
                     exact={link.exact}
-                    onClick={props.isTrigger}
+                    onClick={isTrigger}
                 >{link.label}</NavLink>
               </li>
           )
@@ -29,9 +31,3 @@ const NavigationLinks = ({isAuthentication, ...props}) => {
       </ul>
   );
 };
-const mapStateToProps = state => {
-  return {
-    isAuthentication: state.isAuthentication
-  }
-}
-export default connect(mapStateToProps, null)(NavigationLinks);

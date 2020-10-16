@@ -1,6 +1,9 @@
 import {LOGIN, LOGOUT} from "./types";
+import {getFromLocalStorage} from "../utils/localStorage";
 
-export const isAuthenticationReducer = (state = false, action) => {
+const initialState = getFromLocalStorage("authentication") || false
+
+export const isAuthenticationReducer = (state = initialState, action) => {
   switch (action.type) {
     case LOGIN:
       return action.payload
