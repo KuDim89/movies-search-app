@@ -1,5 +1,5 @@
-import React, {useEffect, useState} from "react";
-import {connect} from "react-redux";
+import React, {useEffect,  useState} from "react";
+import {useSelector, useDispatch} from "react-redux";
 import styles from './Movies.module.scss'
 import Search from "./Search/Search";
 import Card from "./Card/Card";
@@ -8,17 +8,21 @@ import {hideLoginPage, moviesDataDefault, searchMovies, setRandomMovie} from "..
 import ErrorModal from "../../components/ErrorModal/ErrorModal";
 
 
-const Movies = ({isLogin, movies, hideLoginPage, moviesDataDefault, searchMovies, setRandomMovie}) => {
+export default function Movies() {
+  const isLogin = useSelector(state => state.isLogin)
+  const isMovies = useSelector(state => state.movies)
+
+  const dispatch = useDispatch();
 
   const [isLoading, setLoading] = useState(false);
   const [isError, setError] = useState(null);
 
   useEffect(() => {
     if (isLogin === true) {
-      hideLoginPage()
+      dispatch(hideLoginPage())
     }
 
-    if (movies.length === 0) {
+    if (isMovies.length === 0) {
       getMovies()
     }
   }, []);
@@ -26,7 +30,7 @@ const Movies = ({isLogin, movies, hideLoginPage, moviesDataDefault, searchMovies
   async function getMovies() {
     setLoading(true)
     try {
-      await moviesDataDefault();
+      await dispatch(moviesDataDefault());
     } catch (error) {
       setError(error.message)
     }
@@ -37,10 +41,10 @@ const Movies = ({isLogin, movies, hideLoginPage, moviesDataDefault, searchMovies
     e.preventDefault()
     try {
       setLoading(true)
-      await setRandomMovie()
+      await dispatch(setRandomMovie())
       setLoading(false)
     } catch (error) {
-
+      setError(error.message)
     }
   }
 
@@ -48,7 +52,7 @@ const Movies = ({isLogin, movies, hideLoginPage, moviesDataDefault, searchMovies
     setLoading(true)
     const searchValue = string.toString().trim()
     try {
-      await searchMovies(searchValue);
+      await dispatch(searchMovies(searchValue));
     } catch (error) {
       setError(error.message)
     }
@@ -73,7 +77,7 @@ const Movies = ({isLogin, movies, hideLoginPage, moviesDataDefault, searchMovies
           <div className="row w-100">
             {isLoading
                 ? <Loader/>
-                : movies.map(item => (
+                : isMovies.map(item => (
                     <Card key={item.imdbID} cardData={item}/>
                 ))
             }
@@ -84,18 +88,5 @@ const Movies = ({isLogin, movies, hideLoginPage, moviesDataDefault, searchMovies
   )
 }
 
-const mapStateToProps = state => {
-  return {
-    isLogin: state.isLogin,
-    movies: state.movies
-  }
-}
 
-const mapDispatchToProps = {
-  hideLoginPage,
-  moviesDataDefault,
-  setRandomMovie,
-  searchMovies
-}
 
-export default connect(mapStateToProps, mapDispatchToProps)(Movies);

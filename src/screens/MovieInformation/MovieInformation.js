@@ -8,13 +8,11 @@ import InformationTable from "./InformationTable/InformationTable";
 import Poster from "./Poster/Poster";
 
 const MovieInformation = (props) => {
-  const initialState = {
-    loading: true,
-    movieData: {},
-    error: '',
-  }
 
-  const [movieInformationState, setMovieInformationState] = useState(initialState);
+  const [isMovieData, setMovieData] = useState({});
+  const [isLoading, setLoading] = useState(false);
+  const [isError, setError] = useState(null)
+
   const history = useHistory();
 
   useEffect(() => {
@@ -22,6 +20,7 @@ const MovieInformation = (props) => {
   }, [])
 
   async function getIdInfo() {
+    setLoading(true)
 
     const id = props.match.params.id;
     try {
@@ -72,12 +71,7 @@ const MovieInformation = (props) => {
             }
           ]
         }
-        const newState = {
-          ...movieInformationState,
-          movieData: refactoredData,
-          loading: false
-        }
-        setMovieInformationState(newState)
+        setMovieData(refactoredData)
       } else if (data.Response === "False") {
         throw new Error(data.Error)
       } else {
@@ -85,29 +79,21 @@ const MovieInformation = (props) => {
       }
 
     } catch (error) {
-      const newState = {
-        ...movieInformationState,
-        error: error.message,
-        loading: false,
-      }
-      setMovieInformationState(newState)
+      setError(error.message)
     }
+    setLoading(false)
   }
 
   const closeModal = () => {
     history.push("/movies")
-    setMovieInformationState({
-      ...movieInformationState,
-      error: "",
-      loading: true
-    })
+    setError(null);
   }
 
   return (
       <>
-        {movieInformationState.loading && !movieInformationState.error
+        {isLoading && !isError
             ? <Loader/>
-            : Object.keys(movieInformationState.movieData).length !== 0 && (<div className="bg-dark rounded my-4 pr-3 pl-3">
+            : Object.keys(isMovieData).length !== 0 && (<div className="bg-dark rounded my-4 pr-3 pl-3">
           <div className="row justify-content-end">
             <div className="col-3 col-sm-2 col-lg-1">
               <Link to='/movies'>
@@ -119,20 +105,20 @@ const MovieInformation = (props) => {
             <div className="col-12">
               <h1
                   className={`text-center my-4 text-white ${styles.nowrap}`}
-                  title={movieInformationState.movieData.title}
-              >{movieInformationState.movieData.title}</h1>
+                  title={isMovieData.title}
+              >{isMovieData.title}</h1>
             </div>
           </div>
           <div className="row">
             <div className="col-sm-12 col-lg-4">
               <Poster
-                  poster={movieInformationState.movieData.poster}
-                  title={movieInformationState.movieData.title}
+                  poster={isMovieData.poster}
+                  title={isMovieData.title}
               />
             </div>
             <div className="col-12 col-lg-8">
-              <p className="text-white font-weight-light mb-5">{movieInformationState.movieData.plot === "N/A" ? "No information" : movieInformationState.movieData.plot}</p>
-              {movieInformationState.movieData.tables.map((table, index) => {
+              <p className="text-white font-weight-light mb-5">{isMovieData.plot === "N/A" ? "No information" : isMovieData.plot}</p>
+              {isMovieData.tables.map((table, index) => {
                 if (index === 0) {
                   return (
                       <InformationTable
@@ -146,7 +132,7 @@ const MovieInformation = (props) => {
             </div>
           </div>
           <div className="row">
-            {movieInformationState.movieData.tables.map((table, index) => {
+            {isMovieData.tables.map((table, index) => {
               if (index !== 0) {
                 return (
                     <div className="col-12 col-lg-4 mb-4" key={index}>
@@ -161,7 +147,7 @@ const MovieInformation = (props) => {
             }
           </div>
         </div>)}
-        {movieInformationState.error && <Modal error={movieInformationState.error} closeModal={closeModal}/>}
+        {isError && <Modal error={isError} closeModal={closeModal}/>}
       </>
   )
 }

@@ -1,7 +1,7 @@
 import React from "react";
 import styles from "./NotFound.module.scss"
 
-const NotFound = () => {
+export default function NotFound() {
   return (
       <div className="rows">
         <div className="col-12">
@@ -11,4 +11,3 @@ const NotFound = () => {
   )
 }
 
-export default NotFound;
