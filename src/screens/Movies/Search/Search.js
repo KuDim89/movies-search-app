@@ -2,7 +2,7 @@ import React, {useState} from "react";
 import styles from "./Search.module.scss"
 import ButtonColored from "../../../components/ButtonColored/ButtonColored";
 
-const Search = (props) => {
+export default function Search({onSearchClick, onRandomClick}) {
 
   const [searchValue, setSearchValue] = useState('');
 
@@ -13,7 +13,7 @@ const Search = (props) => {
   const callSearchFunction = (e) => {
     if(searchValue){
       e.preventDefault();
-      props.onSearchClick(searchValue);
+      onSearchClick(searchValue);
       resetInput();
     }
   }
@@ -43,14 +43,10 @@ const Search = (props) => {
         <ButtonColored
             additionalClasses={"btn-dark my-2"}
             type="submit"
-            onClick={props.onRandomClick}
+            onClick={onRandomClick}
         >
           Random
         </ButtonColored>
       </form>
   )
 }
-
-
-
-export default Search;

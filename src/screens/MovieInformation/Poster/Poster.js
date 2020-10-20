@@ -2,14 +2,13 @@ import React from 'react';
 import styles from "./Poster.module.scss";
 import defaultPoster from "../../../assets/poster.jpg";
 
-const Poster = (props) => {
+export default function Poster ({poster, title}) {
   return (
       <div className={styles.img_wrapper}>
         <img className="mb-5"
-             src={props.poster === "N/A" ? defaultPoster : props.poster}
-             alt={props.title}/>
+             src={poster === "N/A" ? defaultPoster : poster}
+             alt={title}/>
       </div>
   );
 };
 
-export default Poster;
