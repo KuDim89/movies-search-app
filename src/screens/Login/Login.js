@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from "react";
 import styles from "./Login.module.scss"
 import {Link, useHistory} from "react-router-dom";
-import {connect} from "react-redux";
+import {useSelector, useDispatch} from "react-redux";
 import {validateControl} from "../../utils/formFunctions/validateControl";
 import {createControl} from "../../utils/formFunctions/createFormControl";
 import {validateForm} from "../../utils/formFunctions/validateForm";
@@ -10,26 +10,28 @@ import LogoImg from "../../components/LogoImg/LogoImg";
 import CustomForm from "../../components/CustomForm/CustomForm";
 import {login, showLoginPage} from "../../redux/actions";
 
-const Login = ({isAuthentication, isLogin, users, loginPageData, login, showLoginPage}) => {
-  const initialState = {
-    loader: true,
-    error: null,
+export default function Login() {
+
+  const isAuthentication = useSelector(state => state.isAuthentication);
+  const isLogin = useSelector(state => state.isLogin);
+  const users = useSelector(state => state.app.users);
+  const loginPageData = useSelector(state => state.app.loginData)
+
+  const dispatch = useDispatch();
+  const history = useHistory();
+
+  const initialFormState = {
     isFormValid: false,
     formControls: createFormControls()
   }
 
-  const [loginState, setLoginState] = useState(initialState);
-  const history = useHistory();
+  const [loginFormState, setLoginFormState] = useState(initialFormState);
 
   useEffect(() => {
     isAuthentication && history.push("/movies")
     if (isLogin === false) {
-      showLoginPage()
+      dispatch(showLoginPage())
     }
-    setLoginState({
-      ...loginState,
-      loader: false
-    })
   }, [])
 
 
@@ -59,7 +61,7 @@ const Login = ({isAuthentication, isLogin, users, loginPageData, login, showLogi
   }
 
   const onChangeHandler = (event, formControlName) => {
-    const loginFormControls = {...loginState.formControls};
+    const loginFormControls = {...loginFormState.formControls};
     const loginControl = loginFormControls[formControlName];
 
     loginControl.value = event
@@ -71,34 +73,34 @@ const Login = ({isAuthentication, isLogin, users, loginPageData, login, showLogi
 
     const isFormValid = validateForm(loginFormControls);
 
-    setLoginState({formControls: loginFormControls, isFormValid})
+    setLoginFormState({formControls: loginFormControls, isFormValid})
   }
 
   const checkUser = (event) => {
     event.preventDefault()
     const allUsers = [...users];
-    const phone = loginState.formControls.phone.value;
-    const password = loginState.formControls.password.value;
+    const phone = loginFormState.formControls.phone.value;
+    const password = loginFormState.formControls.password.value;
     const credentials = allUsers.find(user => user.phone === phone && user.password === password)
 
     if (credentials) {
       history.push("/movies")
-      login()
+      dispatch(login())
     } else {
-      const LoginStateClone = {...loginState}
+      const LoginStateClone = {...loginFormState}
       const controls = {...LoginStateClone.formControls}
       Object.keys(controls).map(controlName => {
         controls[controlName].valid = false;
         controls[controlName].value = "";
-        loginState.isFormValid = false;
+        loginFormState.isFormValid = false;
       })
       const newLoginState = {
-        ...loginState,
+        ...loginFormState,
         formControls: {
           ...controls
         }
       }
-      setLoginState(newLoginState)
+      setLoginFormState(newLoginState)
     }
   }
 
@@ -117,7 +119,7 @@ const Login = ({isAuthentication, isLogin, users, loginPageData, login, showLogi
                     <h3 className="mb-5 text-center">{loginPageData.name}</h3>
                     <h6>Please login to your account</h6>
                     <CustomForm
-                        pageState={loginState}
+                        pageState={loginFormState}
                         formFunction={{onClick: checkUser, onChangeHandler}}
                         buttonName={'Login to JustWatch'}
                     />
@@ -149,19 +151,3 @@ const Login = ({isAuthentication, isLogin, users, loginPageData, login, showLogi
 
   )
 }
-
-const mapStateToProps = state => {
-  return {
-    isAuthentication: state.isAuthentication,
-    isLogin: state.isLogin,
-    users: state.app.users,
-    loginPageData: state.app.loginData
-  }
-}
-
-const mapDispatchToProps = {
-  showLoginPage,
-  login
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(Login);

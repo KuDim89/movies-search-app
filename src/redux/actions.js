@@ -10,6 +10,7 @@ import {getDataCollection} from "../utils/firebaseFunctions/getDataCollection";
 import {findId} from "../utils/findId";
 import {getMoviesArr} from "../utils/omdbFunctions/getMoviesArr";
 import {randomMovie} from "../utils/randomMovie";
+import {removeFromLocalStorage, setToLocalStorage} from "../utils/localStorage";
 
 
 // === The action of the appReducer === //
@@ -137,6 +138,7 @@ export function hideLoginPage() {
 
 // === The action of the isAuthenticationReducer ===
 export function login() {
+  setToLocalStorage("authentication", true);
   return {
     type: LOGIN,
     payload: true
@@ -144,6 +146,7 @@ export function login() {
 }
 
 export function logout() {
+  removeFromLocalStorage("authentication");
   return {
     type: LOGOUT,
     payload: false

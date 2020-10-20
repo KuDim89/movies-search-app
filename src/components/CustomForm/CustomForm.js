@@ -2,12 +2,12 @@ import React from 'react';
 import Input from "../Input/Input";
 import ButtonMain from "../ButtonMain/ButtonMain";
 
-const CustomForm = (props) => {
+export default function CustomForm({pageState, formFunction, buttonName}) {
 
   return (
       <form>
-        {Object.keys(props.pageState.formControls).map((formControlName, index) => {
-          const control = props.pageState.formControls[formControlName];
+        {Object.keys(pageState.formControls).map((formControlName, index) => {
+          const control = pageState.formControls[formControlName];
           return (
               <Input
                   key={index}
@@ -17,20 +17,17 @@ const CustomForm = (props) => {
                   touched={control.touched}
                   label={control.label}
                   placeholder={control.placeholder}
-                  shouldValidate={!!control.validation}
-                  onChange={e => props.formFunction.onChangeHandler(e.target.value, formControlName)}
+                  onChange={e => formFunction.onChangeHandler(e.target.value, formControlName)}
               />
           )
         })}
         <ButtonMain
             additionalClasses={'btn-block py-2 my-4'}
-            onClick={props.formFunction.onClick}
-            disabled={!props.pageState.isFormValid}
+            onClick={formFunction.onClick}
+            disabled={!pageState.isFormValid}
         >
-          {props.buttonName}
+          {buttonName}
         </ButtonMain>
       </form>
   );
 };
-
-export default CustomForm;

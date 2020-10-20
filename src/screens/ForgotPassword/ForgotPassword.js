@@ -1,31 +1,37 @@
 import React, {useEffect, useState} from "react";
-import styles from "./ForgotPassword.module.scss";
+import {useSelector, useDispatch} from "react-redux";
 import {useHistory} from "react-router-dom";
+import styles from "./ForgotPassword.module.scss";
 import {createControl} from "../../utils/formFunctions/createFormControl";
 import {validateControl} from "../../utils/formFunctions/validateControl";
 import {validateForm} from "../../utils/formFunctions/validateForm";
 import LogoImg from "../../components/LogoImg/LogoImg";
 import CustomForm from "../../components/CustomForm/CustomForm";
 import ButtonMain from "../../components/ButtonMain/ButtonMain";
-import {connect} from "react-redux";
 import {hideLoginPage} from "../../redux/actions";
 
-const ForgotPassword = ({isAuthentication, isLogin, forgotPassData, users, hideLoginPage}) => {
+export default function ForgotPassword () {
+  const isAuthentication = useSelector(state => state.isAuthentication);
+  const isLogin = useSelector(state => state.isLogin)
+  const users = useSelector(state => state.app.users)
+  const forgotPassData = useSelector(state => state.app.forgotPassData)
 
-  const initialState = {
+  const dispatch = useDispatch();
+  const history = useHistory();
+
+  const initialFormState = {
     isFormValid: false,
-    credentials: false,
-    isSendPassword: false,
     formControls: createFormControls()
   }
 
-  const [forgotPassState, setForgotPassState] = useState(initialState);
-  const history = useHistory();
+  const [forgotPassFormState, setForgotPassFormState] = useState(initialFormState);
+  const [isCredentials, setCredentials] = useState(false)
+  const [isSendPassword, setSendPassword] = useState(false)
 
   useEffect(() => {
     isAuthentication && history.push("/movies")
     if(isLogin === true) {
-      hideLoginPage()
+      dispatch(hideLoginPage())
     }
   }, [])
 
@@ -54,7 +60,7 @@ const ForgotPassword = ({isAuthentication, isLogin, forgotPassData, users, hideL
   }
 
   const onChangeHandler = (event, formControlName) => {
-    const forgotPassFormControls = {...forgotPassState.formControls};
+    const forgotPassFormControls = {...forgotPassFormState.formControls};
     const forgotPassControl = forgotPassFormControls[formControlName]
 
     forgotPassControl.value = event
@@ -66,7 +72,7 @@ const ForgotPassword = ({isAuthentication, isLogin, forgotPassData, users, hideL
 
     const isFormValid = validateForm(forgotPassFormControls);
 
-    setForgotPassState({formControls: forgotPassFormControls, isFormValid})
+    setForgotPassFormState({formControls: forgotPassFormControls, isFormValid})
   }
 
   const toLogin = () => {
@@ -79,28 +85,25 @@ const ForgotPassword = ({isAuthentication, isLogin, forgotPassData, users, hideL
 
   const sendPassword = (event) => {
     event.preventDefault()
+
     const allUsers = [...users];
-    const pageStateForgotPass = {...forgotPassState}
+    const pageStateForgotPass = {...forgotPassFormState}
     const forgotPassControls = {...pageStateForgotPass.formControls}
     const matchCredentials = allUsers.slice(0).find(user => user.phone === forgotPassControls.phone.value && user.email === forgotPassControls.email.value)
 
-    pageStateForgotPass.credentials = matchCredentials;
-    pageStateForgotPass.isSendPassword = true;
     forgotPassControls.phone.touched = false;
     forgotPassControls.email.touched = false;
     forgotPassControls.phone.value = "";
     forgotPassControls.email.value = "";
 
-    matchCredentials
-        ? pageStateForgotPass.isCredentials = true
-        : pageStateForgotPass.isCredentials = false
-
-    setForgotPassState(pageStateForgotPass);
+    setForgotPassFormState(pageStateForgotPass);
+    setCredentials(matchCredentials);
+    setSendPassword(true);
   }
 
   return (
         <div className="container px-4 py-5 mx-auto">
-          <div className={`d-flex flex-lg-row ${styles.flex_direction_column}`}>
+          <div className={`d-flex flex-lg-row`}>
             <div className={styles.authorizationCard}>
               <div className="row justify-content-center my-auto">
                 <div className="col-md-8 col-10 my-5">
@@ -113,7 +116,7 @@ const ForgotPassword = ({isAuthentication, isLogin, forgotPassData, users, hideL
                   <h3 className="mb-5 text-center">{forgotPassData.name}</h3>
                   <h6>Please enter your phone and email</h6>
                   <CustomForm
-                      pageState={forgotPassState}
+                      pageState={forgotPassFormState}
                       formFunction={{onClick: sendPassword, onChangeHandler}}
                       buttonName={'Send me password'}
                   />
@@ -122,19 +125,19 @@ const ForgotPassword = ({isAuthentication, isLogin, forgotPassData, users, hideL
             </div>
 
             <div className="card py-5 px-5">
-              <div className="my-auto mx-md-5 px-md-5">
-                <h3>{forgotPassData.title}</h3>
+             <div className="my-auto mx-md-5 px-md-5">
+               <h3>{forgotPassData.title}</h3>
                 <small>{forgotPassData.text}</small>
-                <> {forgotPassState.credentials && forgotPassState.isSendPassword && (
+                <> {isCredentials && isSendPassword && (
                     <>
                       <div className="alert alert-success my-3">
-                        {forgotPassState.credentials.name.charAt(0).toUpperCase()
-                        + forgotPassState.credentials.name.slice(1)}
+                        {isCredentials.name.charAt(0).toUpperCase()
+                        + isCredentials.name.slice(1)}
                         &nbsp;
-                        {forgotPassState.credentials.surname.charAt(0).toUpperCase()
-                        + forgotPassState.credentials.surname.slice(1)}
+                        {isCredentials.surname.charAt(0).toUpperCase()
+                        + isCredentials.surname.slice(1)}
                         &nbsp;your password:&nbsp;
-                        <b>{forgotPassState.credentials.password}</b>
+                        <b>{isCredentials.password}</b>
                       </div>
                       <ButtonMain
                           additionalClasses={'btn-block py-2'}
@@ -145,7 +148,7 @@ const ForgotPassword = ({isAuthentication, isLogin, forgotPassData, users, hideL
                     </>
                 )}
                 </>
-                <> {!forgotPassState.credentials && forgotPassState.isSendPassword && (
+                <> {!isCredentials && isSendPassword && (
                     <>
                       <div className="alert alert-danger my-3">
                         We don't know your phone number or mail. Please fill form correct.
@@ -165,18 +168,3 @@ const ForgotPassword = ({isAuthentication, isLogin, forgotPassData, users, hideL
       </div>
   )
 }
-
-const mapStateToProps = state => {
-  return {
-    isAuthentication: state.isAuthentication,
-    isLogin: state.isLogin,
-    forgotPassData: state.app.forgotPassData,
-    users: state.app.users
-  }
-}
-
-const mapDispatchToProps = {
-  hideLoginPage
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(ForgotPassword);

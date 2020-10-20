@@ -1,6 +1,6 @@
 import React from 'react';
 
-const ButtonColored = ({children, additionalClasses, ...rest}) => {
+export default function ButtonColored ({children, additionalClasses, ...rest}) {
 
   const classes = ['btn', additionalClasses].filter(function (el) {
     return el != null;
@@ -15,5 +15,3 @@ const ButtonColored = ({children, additionalClasses, ...rest}) => {
       </button>
   );
 };
-
-export default ButtonColored;

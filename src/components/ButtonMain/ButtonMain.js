@@ -1,6 +1,6 @@
 import React from 'react';
 
-const ButtonMain = ({children, additionalClasses, ...rest}) => {
+export default function ButtonMain ({children, additionalClasses, ...rest}) {
 
   const classes = ['btn-secondary', additionalClasses].filter(el => {
     return el != null;
@@ -15,5 +15,3 @@ const ButtonMain = ({children, additionalClasses, ...rest}) => {
       </button>
   );
 };
-
-export default ButtonMain;

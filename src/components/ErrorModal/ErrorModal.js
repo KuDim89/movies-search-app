@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from "react";
 import styles from "./ErrorModal.module.scss"
 
-const Modal = (props) => {
+export default function Modal({error, closeModal}) {
 
   const objectErrorText = {
     MOVIE_NOT_FOUND: "Movie not found!",
@@ -13,7 +13,7 @@ const Modal = (props) => {
   const [errorText, setErrorText] = useState('')
 
   useEffect(() => {
-    defineErrorText(props.error);
+    defineErrorText(error);
   })
 
   const defineErrorText = (error) => {
@@ -45,14 +45,14 @@ const Modal = (props) => {
                   <div className="list-group-item list-group-item-danger h5">
                     <div className="d-flex list-group-item-error py-2">
                       <div>&mdash; &nbsp;</div>
-                      {props.error}
+                      {error}
                     </div>
                   </div>
                 </div>
                 <button
                     type="button"
                     className={`close ${styles.outline}`}
-                    onClick={props.closeModal}
+                    onClick={closeModal}
                 >
                   <span aria-hidden="true">&times;</span>
                 </button>
@@ -66,5 +66,3 @@ const Modal = (props) => {
       </div>
   )
 }
-
-export default Modal;

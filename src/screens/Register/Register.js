@@ -1,7 +1,8 @@
 import React, {useEffect, useState} from "react";
+import {useDispatch, useSelector} from "react-redux";
+import {useHistory} from "react-router-dom";
 import styles from "./Register.module.scss";
 import {setData} from "../../utils/firebaseFunctions/setData";
-import {useHistory} from "react-router-dom";
 import {createControl} from "../../utils/formFunctions/createFormControl";
 import Input from "../../components/Input/Input";
 import Checkbox from "./Checkbox/Checkbox";
@@ -10,25 +11,27 @@ import {validateForm} from "../../utils/formFunctions/validateForm";
 import ButtonMain from "../../components/ButtonMain/ButtonMain";
 import LogoImg from "../../components/LogoImg/LogoImg";
 import {hideLoginPage} from "../../redux/actions";
-import {connect} from "react-redux";
 
 
-const Register = ({isAuthentication, loginData, isLogin, hideLoginPage }) => {
-  const initialState = {
+export default function Register() {
+
+  const isAuthentication = useSelector(state => state.isAuthentication);
+  const loginData = useSelector(state => state.app.loginData);
+  const isLogin = useSelector(state => state.isLogin);
+
+  const dispatch = useDispatch();
+  const history = useHistory();
+  const initialFormState = {
     isFormValid: false,
     formControls: createFormControls()
   }
-
-  const [registerFormState, setRegisterFormState] = useState(initialState);
-  const history = useHistory();
+  const [registerFormState, setRegisterFormState] = useState(initialFormState);
 
   useEffect(() => {
-
     isAuthentication && history.push("/movies")
     if(isLogin === true) {
-      hideLoginPage()
+      dispatch(hideLoginPage());
     }
-
   })
 
   function createFormControls() {
@@ -175,7 +178,6 @@ const Register = ({isAuthentication, loginData, isLogin, hideLoginPage }) => {
                               touched={control.touched}
                               label={control.label}
                               placeholder={control.placeholder}
-                              shouldValidate={!!control.validation}
                               onChange={e => onChangeHandler(e.target.value, formControlName)}
                           />
                       )
@@ -188,7 +190,6 @@ const Register = ({isAuthentication, loginData, isLogin, hideLoginPage }) => {
                       valid={registerFormState.formControls.policy.valid}
                       touched={registerFormState.formControls.policy.touched}
                       label={registerFormState.formControls.policy.label}
-                      shouldValidate={!!registerFormState.formControls.policy.validation}
                       checked={registerFormState.formControls.policy.checked}
                       onChange={e => onChangeHandler(e.target.checked, 'policy')}
                   />
@@ -207,18 +208,3 @@ const Register = ({isAuthentication, loginData, isLogin, hideLoginPage }) => {
       </div>
   )
 }
-
-const mapStateToProps = state => {
-  return {
-    isAuthentication: state.isAuthentication,
-    isLogin: state.isLogin,
-    loginData: state.app.loginData
-  }
-}
-
-const mapDispatchToProps = {
-  hideLoginPage
-}
-
-
-export default connect(mapStateToProps, mapDispatchToProps)(Register);

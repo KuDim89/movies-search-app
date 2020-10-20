@@ -1,27 +1,27 @@
 import React from 'react';
 
-const Checkbox = (props) => {
-  const inputType = props.type || 'checkbox';
+export default function Checkbox ({type, label, checked, touched, valid, onChange}) {
+  const inputType = type || 'checkbox';
   const name = `${inputType}-${Math.random().toFixed(3) * 1000}`;
   const classes = ['form-check-input'];
-  let label;
+  let inputLabel;
 
-  switch (props.label) {
+  switch (label) {
     case 'policy':
-      label = <>Creating an account means you’re okay with our
+      inputLabel = <>Creating an account means you’re okay with our
           <a className="text-muted"><b> Terms of Service</b></a>,
           <a className="text-muted"><b> Privacy Policy</b></a>, and our default
           <a className="text-muted"><b> Notification Settings</b></a>.</>
       break;
     default:
-      label = props.label || ''
+      inputLabel = label || ''
   }
 
-  if(props.touched) {
+  if(touched) {
     classes.push('is-invalid')
   }
 
-  if(props.valid) {
+  if(valid) {
     const controlIndex = classes.findIndex(className => className === 'is-invalid')
     classes[controlIndex] = 'is-valid'
   }
@@ -32,14 +32,12 @@ const Checkbox = (props) => {
             type={inputType.toString().toLowerCase()}
             name={name.toString().toLowerCase()}
             className={classes.join(" ")}
-            checked={props.checked}
-            onChange={props.onChange}
+            checked={checked}
+            onChange={onChange}
         />
         <label className="form-check-label">
-          {label}
+          {inputLabel}
         </label>
       </div>
   );
 };
-
-export default Checkbox;
