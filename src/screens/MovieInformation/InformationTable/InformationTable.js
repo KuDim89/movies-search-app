@@ -23,8 +23,6 @@ export default function InformationTable({tableData}) {
             </table>
           </div>
         </div>
-
-
       </>
   );
 };

@@ -11,16 +11,18 @@ import {validateForm} from "../../utils/formFunctions/validateForm";
 import ButtonMain from "../../components/ButtonMain/ButtonMain";
 import LogoImg from "../../components/LogoImg/LogoImg";
 import {hideLoginPage} from "../../redux/actions";
+import {useAuth} from "../../hooks/use-auth";
+import {useLoginData} from "../hooks/use-loginData";
+import {useLoginPage} from "../../hooks/use-loginPage";
 
 
 export default function Register() {
-
-  const isAuthentication = useSelector(state => state.isAuthentication);
-  const loginData = useSelector(state => state.app.loginData);
-  const isLogin = useSelector(state => state.isLogin);
-
   const dispatch = useDispatch();
   const history = useHistory();
+  const isAuthentication = useAuth();
+  const loginData = useLoginData();
+  const isLogin = useLoginPage();
+
   const initialFormState = {
     isFormValid: false,
     formControls: createFormControls()

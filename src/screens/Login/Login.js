@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from "react";
 import styles from "./Login.module.scss"
 import {Link, useHistory} from "react-router-dom";
-import {useSelector, useDispatch} from "react-redux";
+import {useDispatch} from "react-redux";
 import {validateControl} from "../../utils/formFunctions/validateControl";
 import {createControl} from "../../utils/formFunctions/createFormControl";
 import {validateForm} from "../../utils/formFunctions/validateForm";
@@ -9,16 +9,19 @@ import ButtonMain from "../../components/ButtonMain/ButtonMain";
 import LogoImg from "../../components/LogoImg/LogoImg";
 import CustomForm from "../../components/CustomForm/CustomForm";
 import {login, showLoginPage} from "../../redux/actions";
+import {useAuth} from "../../hooks/use-auth";
+import {useLoginPage} from "../../hooks/use-loginPage";
+import {useUsers} from "../hooks/use-users";
+import {useLoginData} from "../hooks/use-loginData";
 
 export default function Login() {
 
-  const isAuthentication = useSelector(state => state.isAuthentication);
-  const isLogin = useSelector(state => state.isLogin);
-  const users = useSelector(state => state.app.users);
-  const loginPageData = useSelector(state => state.app.loginData)
-
   const dispatch = useDispatch();
   const history = useHistory();
+  const isAuthentication = useAuth()
+  const isLogin = useLoginPage()
+  const users = useUsers()
+  const loginPageData = useLoginData()
 
   const initialFormState = {
     isFormValid: false,

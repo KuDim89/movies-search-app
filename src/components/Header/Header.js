@@ -1,22 +1,22 @@
 import React, {useState} from "react";
 import styles from "./Header.module.scss"
 import {useHistory} from "react-router-dom";
-import {useSelector, useDispatch} from "react-redux";
+import {useDispatch} from "react-redux";
 import NavigationLinks from "./NavigationLinks/NavigationLinks";
 import LogoImg from "../LogoImg/LogoImg";
 import ButtonColored from "../ButtonColored/ButtonColored";
 import ButtonBurger from "./ButtonBurger/ButtonBurger";
 import {logout, removeMovies, showLoginPage} from "../../redux/actions";
+import {useAuth} from "../../hooks/use-auth";
+import {useLoginPage} from "../../hooks/use-loginPage";
 
 export default function Header () {
-
-  const isAuthentication = useSelector(state => state.isAuthentication)
-  const isLogin = useSelector(state => state.isLogin)
-
+  const history = useHistory();
   const dispatch = useDispatch();
+  const isAuthentication = useAuth();
+  const isLogin = useLoginPage()
 
   const [burgerState, setBurgerState] = useState(false)
-  const history = useHistory();
 
   const handleLogout = () => {
     dispatch(logout());
@@ -43,7 +43,7 @@ export default function Header () {
                 width={"7"}
                 borderRadius={"10"}/>
           <div className={`collapse navbar-collapse ${burgerState ? "show" : ""}`} id="navbarSupportedContent">
-            <NavigationLinks isTrigger={isTrigger}/>
+            <NavigationLinks isTrigger={() =>(setBurgerState(isTrigger(burgerState)))}/>
           </div>
 
           {isLogin
@@ -53,14 +53,14 @@ export default function Header () {
                     ? <div className={styles.padding_right}>
                       <ButtonColored
                           additionalClasses={"btn-outline-secondary"}
-                          onClick={handleLogout}
+                          onClick={handleLogin}
                       >Logout
                       </ButtonColored>
                     </div>
                     : <div className={styles.padding_right}>
                       <ButtonColored
                           additionalClasses={"btn-outline-secondary"}
-                          onClick={handleLogin}
+                          onClick={handleLogout}
                       >Login
                       </ButtonColored>
                     </div>
