@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from "react";
-import {useSelector, useDispatch} from "react-redux";
+import {useDispatch} from "react-redux";
 import {useHistory} from "react-router-dom";
 import styles from "./ForgotPassword.module.scss";
 import {createControl} from "../../utils/formFunctions/createFormControl";
@@ -9,15 +9,19 @@ import LogoImg from "../../components/LogoImg/LogoImg";
 import CustomForm from "../../components/CustomForm/CustomForm";
 import ButtonMain from "../../components/ButtonMain/ButtonMain";
 import {hideLoginPage} from "../../redux/actions";
+import {useAuth} from "../../hooks/use-auth";
+import {useLoginPage} from "../../hooks/use-loginPage";
+import {useUsers} from "../hooks/use-users";
+import {useForgotPassData} from "./hooks/use-forgotPassData";
 
 export default function ForgotPassword () {
-  const isAuthentication = useSelector(state => state.isAuthentication);
-  const isLogin = useSelector(state => state.isLogin)
-  const users = useSelector(state => state.app.users)
-  const forgotPassData = useSelector(state => state.app.forgotPassData)
 
   const dispatch = useDispatch();
   const history = useHistory();
+  const isAuthentication = useAuth()
+  const isLogin = useLoginPage()
+  const users = useUsers()
+  const forgotPassData = useForgotPassData()
 
   const initialFormState = {
     isFormValid: false,

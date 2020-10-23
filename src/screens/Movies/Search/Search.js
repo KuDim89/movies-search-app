@@ -2,8 +2,8 @@ import React, {useState} from "react";
 import styles from "./Search.module.scss"
 import ButtonColored from "../../../components/ButtonColored/ButtonColored";
 
-export default function Search({onSearchClick, onRandomClick}) {
 
+export default function Search({onSearchClick, onRandomClick}) {
   const [searchValue, setSearchValue] = useState('');
 
   const resetInput = () => {
