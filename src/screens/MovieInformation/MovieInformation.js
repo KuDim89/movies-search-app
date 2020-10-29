@@ -1,12 +1,12 @@
 import React, {useEffect, useState} from "react";
 import {Link, Redirect, useHistory} from "react-router-dom";
 import styles from "./MovieInformation.module.scss"
-import {getMoviesInfo} from "../../utils/omdbFunctions/getMovieInfo";
 import Modal from "../../components/ErrorModal/ErrorModal";
 import Loader from "../../components/Loader/Loader";
 import InformationTable from "./InformationTable/InformationTable";
 import Poster from "./Poster/Poster";
 import {useAuth} from "../../hooks/use-auth";
+import {getIdInfo} from "./service";
 
 export default function MovieInformation({...props}) {
 
@@ -16,75 +16,21 @@ export default function MovieInformation({...props}) {
 
   const history = useHistory();
   const authentication = useAuth();
+  const id = props.match.params.id;
 
-  useEffect(() => {
-    getIdInfo()
+  useEffect( () => {
+    setLoading(true)
+    try {
+      getIdInfo(id).then(response => {
+        setMovieData(response)
+        setLoading(false)
+      })
+    } catch (error){
+      setError(error.message)
+      setLoading(false)
+    }
   }, [])
 
-  async function getIdInfo() {
-    setLoading(true)
-
-    const id = props.match.params.id;
-    try {
-      const data = await getMoviesInfo(id);
-
-      if (data.Response === "True") {
-        const refactoredData = {
-          title: data.Title,
-          poster: data.Poster,
-          plot: data.Plot,
-          tables: [
-            {
-              title: 'General information',
-              data: {
-                year: data.Year,
-                language: data.Language,
-                released: data.Released,
-                runtime: data.Runtime,
-                genre: data.Genre
-              }
-            },
-            {
-              title: 'Working team',
-              data: {
-                country: data.Country,
-                director: data.Director,
-                writer: data.Actors,
-              }
-            },
-            {
-              title: 'Other information',
-              data: {
-                rated: data.Rated,
-                awards: data.Awards,
-                metaScore: data.Metascore,
-                boxOffice: data.BoxOffice,
-                production: data.Production,
-                website: data.Website
-              }
-            },
-            {
-              title: 'The Open Movie Database',
-              data: {
-                imdbRating: data.imdbRating,
-                imdbVotes: data.imdbVotes,
-                imdbID: data.imdbID
-              }
-            }
-          ]
-        }
-        setMovieData(refactoredData)
-      } else if (data.Response === "False") {
-        throw new Error(data.Error)
-      } else {
-        throw new Error('Response undefined')
-      }
-
-    } catch (error) {
-      setError(error.message)
-    }
-    setLoading(false)
-  }
 
   const closeModal = () => {
     history.push("/movies")
