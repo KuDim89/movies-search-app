@@ -3,7 +3,6 @@ import styles from "./Login.module.scss"
 import {Link, useHistory} from "react-router-dom";
 import {useDispatch} from "react-redux";
 import {validateControl} from "../../utils/formFunctions/validateControl";
-import {createControl} from "../../utils/formFunctions/createFormControl";
 import {validateForm} from "../../utils/formFunctions/validateForm";
 import ButtonMain from "../../components/ButtonMain/ButtonMain";
 import LogoImg from "../../components/LogoImg/LogoImg";
@@ -13,6 +12,7 @@ import {useAuth} from "../../hooks/use-auth";
 import {useLoginPage} from "../../hooks/use-loginPage";
 import {useUsers} from "../hooks/use-users";
 import {useLoginData} from "../hooks/use-loginData";
+import {createFormControls} from "./service";
 
 export default function Login() {
 
@@ -37,31 +37,6 @@ export default function Login() {
     }
   }, [])
 
-
-  function createFormControls() {
-    return {
-      phone: createControl(
-          {
-            type: 'text',
-            label: 'phone',
-            placeholder: '+385619086171',
-            value: ''
-          },
-          {
-            phone: true,
-          }),
-      password: createControl(
-          {
-            type: 'password',
-            label: 'password',
-            placeholder: 'password',
-            value: ''
-          },
-          {
-            minLength: 6
-          })
-    }
-  }
 
   const onChangeHandler = (event, formControlName) => {
     const loginFormControls = {...loginFormState.formControls};

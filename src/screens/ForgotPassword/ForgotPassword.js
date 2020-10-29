@@ -2,7 +2,6 @@ import React, {useEffect, useState} from "react";
 import {useDispatch} from "react-redux";
 import {useHistory} from "react-router-dom";
 import styles from "./ForgotPassword.module.scss";
-import {createControl} from "../../utils/formFunctions/createFormControl";
 import {validateControl} from "../../utils/formFunctions/validateControl";
 import {validateForm} from "../../utils/formFunctions/validateForm";
 import LogoImg from "../../components/LogoImg/LogoImg";
@@ -13,6 +12,9 @@ import {useAuth} from "../../hooks/use-auth";
 import {useLoginPage} from "../../hooks/use-loginPage";
 import {useUsers} from "../hooks/use-users";
 import {useForgotPassData} from "./hooks/use-forgotPassData";
+import {createFormControls} from "./service";
+import {useLogin} from "./hooks/use-login";
+import {useRegister} from "./hooks/use-register";
 
 export default function ForgotPassword () {
 
@@ -39,29 +41,6 @@ export default function ForgotPassword () {
     }
   }, [])
 
-  function createFormControls() {
-    return {
-      phone: createControl(
-          {
-            type: "text",
-            label: "phone",
-            placeholder: "+385619086171",
-            value: ''
-          },
-          {
-            phone: true
-          }),
-      email: createControl(
-          {
-            type: "email",
-            label: "email",
-            value: ''
-          },
-          {
-            email: true
-          })
-    }
-  }
 
   const onChangeHandler = (event, formControlName) => {
     const forgotPassFormControls = {...forgotPassFormState.formControls};
@@ -79,13 +58,6 @@ export default function ForgotPassword () {
     setForgotPassFormState({formControls: forgotPassFormControls, isFormValid})
   }
 
-  const toLogin = () => {
-    history.push("/")
-  }
-
-  const toRegister = () => {
-    history.push("/register")
-  }
 
   const sendPassword = (event) => {
     event.preventDefault()
@@ -145,7 +117,7 @@ export default function ForgotPassword () {
                       </div>
                       <ButtonMain
                           additionalClasses={'btn-block py-2'}
-                          onClick={toLogin}
+                          onClick={useLogin}
                       >
                         Go to Login page
                       </ButtonMain>
@@ -159,7 +131,7 @@ export default function ForgotPassword () {
                       </div>
                       <ButtonMain
                           additionalClasses={'btn-block py-2'}
-                          onClick={toRegister}
+                          onClick={useRegister}
                       >
                         Go to Register page
                       </ButtonMain>
