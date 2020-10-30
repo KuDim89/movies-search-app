@@ -1,4 +1,5 @@
 import React from 'react';
+import {Link} from "react-router-dom";
 
 export default function Checkbox ({type, label, checked, touched, valid, onChange}) {
   const inputType = type || 'checkbox';
@@ -9,9 +10,9 @@ export default function Checkbox ({type, label, checked, touched, valid, onChang
   switch (label) {
     case 'policy':
       inputLabel = <>Creating an account means you’re okay with our
-          <a className="text-muted"><b> Terms of Service</b></a>,
-          <a className="text-muted"><b> Privacy Policy</b></a>, and our default
-          <a className="text-muted"><b> Notification Settings</b></a>.</>
+          <Link className="text-muted" to="#"><b> Terms of Service</b></Link>,
+          <Link className="text-muted" to="#"><b> Privacy Policy</b></Link>, and our default
+          <Link className="text-muted" to="#"><b> Notification Settings</b></Link>.</>
       break;
     default:
       inputLabel = label || ''

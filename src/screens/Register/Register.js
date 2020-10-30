@@ -1,9 +1,8 @@
 import React, {useEffect, useState} from "react";
-import {useDispatch, useSelector} from "react-redux";
+import {useDispatch} from "react-redux";
 import {useHistory} from "react-router-dom";
 import styles from "./Register.module.scss";
 import {setData} from "../../utils/firebaseFunctions/setData";
-import {createControl} from "../../utils/formFunctions/createFormControl";
 import Input from "../../components/Input/Input";
 import Checkbox from "./Checkbox/Checkbox";
 import {validateControl} from "../../utils/formFunctions/validateControl";
@@ -11,16 +10,19 @@ import {validateForm} from "../../utils/formFunctions/validateForm";
 import ButtonMain from "../../components/ButtonMain/ButtonMain";
 import LogoImg from "../../components/LogoImg/LogoImg";
 import {hideLoginPage} from "../../redux/actions";
+import {useAuth} from "../../hooks/use-auth";
+import {useLoginData} from "../hooks/use-loginData";
+import {useLoginPage} from "../../hooks/use-loginPage";
+import {createFormControls} from "./service";
 
 
 export default function Register() {
-
-  const isAuthentication = useSelector(state => state.isAuthentication);
-  const loginData = useSelector(state => state.app.loginData);
-  const isLogin = useSelector(state => state.isLogin);
-
   const dispatch = useDispatch();
   const history = useHistory();
+  const isAuthentication = useAuth();
+  const loginData = useLoginData();
+  const isLogin = useLoginPage();
+
   const initialFormState = {
     isFormValid: false,
     formControls: createFormControls()
@@ -33,68 +35,6 @@ export default function Register() {
       dispatch(hideLoginPage());
     }
   })
-
-  function createFormControls() {
-    return {
-      name: createControl(
-          {
-            type: 'text',
-            label: 'name',
-            value: ''
-          },
-          {
-            minLength: 2
-          }),
-      surname: createControl(
-          {
-            type: 'text',
-            label: 'surname',
-            value: ''
-          },
-          {
-            minLength: 2
-          }),
-      email: createControl(
-          {
-            type: "email",
-            label: "email",
-            value: ''
-          },
-          {
-            email: true
-          }),
-      phone: createControl(
-          {
-            type: "text",
-            label: "phone",
-            placeholder: "+385619086171",
-            value: ''
-          },
-          {
-            phone: true
-          }),
-      password: createControl(
-          {
-            type: "password",
-            label: "password",
-            placeholder: "6+ characters",
-            autoComplete: "off",
-            value: ''
-          },
-          {
-            minLength: 6
-          }),
-      policy: createControl(
-          {
-            type: "checkbox",
-            label: "policy",
-            checked: false,
-          },
-          {
-            checked: true
-          })
-    }
-  }
 
   const onChangeHandler = (event, formControlName) => {
     const registerFormControls = {...registerFormState.formControls};

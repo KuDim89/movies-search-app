@@ -15,7 +15,7 @@ export function validateControl(value, validation= null) {
   }
 
   if (validation.phone) {
-    isValid = value.match(/^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{5,7}$/) && isValid
+    isValid = value.match(/^[+]?[(]?[0-9]{3}[)]?[-\s]?[0-9]{3}[-\s]?[0-9]{5,7}$/) && isValid
   }
 
   if (validation.email) {

@@ -1,5 +1,5 @@
 rules_version = '2';
-service cloud.firestore {
+service.js.js.js cloud.firestore {
   match /databases/{database}/documents {
 
     // This rule allows anyone with your database reference to view, edit,

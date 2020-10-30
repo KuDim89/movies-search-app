@@ -4,7 +4,6 @@ import defaultPoster from "../../../assets/poster.jpg"
 import {Link} from "react-router-dom";
 
 
-
 export default function Card ({cardData}) {
   return (
         <div className="col-12 col-md-6 col-lg-3 col-xl-3 my-4">

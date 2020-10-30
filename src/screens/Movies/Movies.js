@@ -1,18 +1,22 @@
 import React, {useEffect,  useState} from "react";
-import {useSelector, useDispatch} from "react-redux";
+import {useDispatch} from "react-redux";
+import {Redirect} from "react-router-dom";
 import styles from './Movies.module.scss'
 import Search from "./Search/Search";
 import Card from "./Card/Card";
 import Loader from "../../components/Loader/Loader";
 import {hideLoginPage, moviesDataDefault, searchMovies, setRandomMovie} from "../../redux/actions";
 import ErrorModal from "../../components/ErrorModal/ErrorModal";
+import {useAuth} from "../../hooks/use-auth";
+import {useLoginPage} from "../../hooks/use-loginPage";
+import {useMovies} from "./hooks/use-movies";
 
 
 export default function Movies() {
-  const isLogin = useSelector(state => state.isLogin)
-  const isMovies = useSelector(state => state.movies)
-
   const dispatch = useDispatch();
+  const isLogin = useLoginPage()
+  const isMovies = useMovies()
+  const authentication = useAuth()
 
   const [isLoading, setLoading] = useState(false);
   const [isError, setError] = useState(null);
@@ -64,27 +68,29 @@ export default function Movies() {
   }
 
   return (
-      <>
-        <div className="row w-100">
-          <div className="col-12">
-            <Search
-                onSearchClick={handleSearchClick}
-                onRandomClick = {handleRandomClick}
-            />
-          </div>
-        </div>
-        <div className={`${styles.cards_wrapper} ${styles.relative}`}>
-          <div className="row w-100">
-            {isLoading
-                ? <Loader/>
-                : isMovies.map(item => (
-                    <Card key={item.imdbID} cardData={item}/>
-                ))
-            }
-            {isError && <ErrorModal error={isError} closeModal={closeModal}/>}
-          </div>
-        </div>
-      </>
+      authentication
+      ? <>
+            <div className="row w-100">
+              <div className="col-12">
+                <Search
+                    onSearchClick={handleSearchClick}
+                    onRandomClick = {handleRandomClick}
+                />
+              </div>
+            </div>
+            <div className={`${styles.cards_wrapper} ${styles.relative}`}>
+              <div className="row w-100">
+                {isLoading
+                    ? <Loader/>
+                    : isMovies.map(item => (
+                        <Card key={item.imdbID} cardData={item}/>
+                    ))
+                }
+                {isError && <ErrorModal error={isError} closeModal={closeModal}/>}
+              </div>
+            </div>
+          </>
+      : <Redirect to="/" />
   )
 }
 

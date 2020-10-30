@@ -1,11 +1,11 @@
 import React from 'react';
 import {NavLink} from "react-router-dom";
-import {useSelector} from "react-redux";
+import {useAuth} from "../../../hooks/use-auth";
 
 
 export default function NavigationLinks ({isTrigger}) {
 
-  const isAuthentication = useSelector(state => state.isAuthentication)
+  const isAuthentication = useAuth()
 
   const links = [
     {to: '/movies', label: 'Movies', exact: true},
