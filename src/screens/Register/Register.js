@@ -14,6 +14,7 @@ import {useAuth} from "../../hooks/use-auth";
 import {useLoginData} from "../hooks/use-loginData";
 import {useLoginPage} from "../../hooks/use-loginPage";
 import {createFormControls} from "./service";
+import ModalSuccess from "./ModalSuccess/ModalSuccess";
 
 
 export default function Register() {
@@ -28,6 +29,7 @@ export default function Register() {
     formControls: createFormControls()
   }
   const [registerFormState, setRegisterFormState] = useState(initialFormState);
+  const [isSuccessful, setSuccessful] = useState(false);
 
   useEffect(() => {
     isAuthentication && history.push("/movies")
@@ -65,7 +67,12 @@ export default function Register() {
     })
 
     setData('users', newUser)
-    history.push("/")
+    setSuccessful(true)
+    setTimeout(()=>{
+      setSuccessful(false)
+      history.push("/")
+    }, 1000)
+
   }
 
   return (
@@ -142,6 +149,7 @@ export default function Register() {
                   </ButtonMain>
                 </form>
               </div>
+              {isSuccessful && <ModalSuccess />}
             </div>
           </div>
         </div>
