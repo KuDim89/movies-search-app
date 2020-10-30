@@ -29,7 +29,7 @@ export default function MovieInformation({...props}) {
       setError(error.message)
       setLoading(false)
     }
-  }, [])
+  },[])
 
 
   const closeModal = () => {
